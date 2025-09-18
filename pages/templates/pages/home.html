@@ -1,21 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <style>
+            
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+            }
+
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #4CAF50;
+                padding: 10px 20px;
+            }
+
+            .navbar .name {
+                color: white;
+                font-size: 1.5rem;
+                font-weight: bold;
+                text-decoration: none;
+            }
+
+            .navbar ul {
+                list-style: none;
+                display: flex;
+                margin: 0;
+                padding: 0;
+            }
+
+            .navbar ul li {
+                margin-left: 20px;
+            }
+
+            .navbar ul li a {
+                text-decoration: none;
+                color: white;
+                font-size: 1rem;
+                padding: 8px 12px;
+                border-radius: 4px;
+            }
+
+            .navbar ul li a:hover {
+                background-color: white;
+                color: #4CAF50;
+            }
+
+            @media (max-width: 600px) {
+                .navbar {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .navbar ul {
+                    flex-direction: column;
+                    width: 100%;
+                }
+                .navbar ul li {
+                    margin: 5px 0;
+                }
+            }
+        </style>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pit Portal</title>
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="">Events</a></li>
-                <li><a href="">Stats</a></li>
-                <li><a href="">Social</a></li>
-            </ul>
-        </nav>
+        <header>
+            <nav class="navbar">
+                <a href="/" class="name">Pit Portal</a>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="">Events</a></li>
+                    <li><a href="">Social</a></li>
+                    <li><a href="">Stats</a></li>
 
-        
+                    {% if user.is_authenticated %}
+                        <li><a href="/logout">Logout</a></li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <h1>THIS IS THE HOME PAGE. NOTE TO COLLABORATORS: JUST THE NAV BAR IS WORKING SO FAR</h1>
+            <h3>Also the css in in a style tag because i couldnt figure out why the styles.css wasnt coming through</h3>
+        </main>  
     </body>
 </html>
