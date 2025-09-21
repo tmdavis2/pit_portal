@@ -28,7 +28,7 @@
                 font-weight: 750;
                 font-style: normal;
                 display: flex;
-                justify-content: space-between;
+                /* justify-content: space-between; */
                 align-items: center;
                 background-color: #f8f1ed; /* white navbar */
                 padding: 10px 20px;
@@ -47,6 +47,7 @@
                 display: flex;
                 margin: 0;
                 padding: 0;
+                margin-left: auto;
             }
 
             .navbar ul li {
@@ -158,6 +159,7 @@
                 </ul>
             </nav>
         </header>
+        {% block content %}
         <main>
             <div class="card">
                 <h1>Welcome to the Pit Portal!</h1>
@@ -178,6 +180,7 @@
                 </div>
             </div>
         </main> 
+        {% endblock %}
         <footer class="footer">
             &copy; 2025 Pit Portal. All rights reserved.
         </footer> 
