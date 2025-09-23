@@ -27,3 +27,5 @@ urlpatterns = [
     path("logout/", accounts_views.logout_view, name="logout"),
 ]
 
+# custom error handlers (must be set at the root urls.py level)
+handler404 = "pages.views.page404_view"
