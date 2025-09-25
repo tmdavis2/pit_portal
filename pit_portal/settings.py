@@ -23,8 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!x82wqd@bs5&z%ehrayc5dsyp$=cq#1hv!md%3m6refaojr^hr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# set false to show your 404 page
 DEBUG = True
-
+# In production, this should be replaced with a proper domain name: 'yourdomain.com'
+# otherwise: use '*' for testing
 ALLOWED_HOSTS = []
 
 
