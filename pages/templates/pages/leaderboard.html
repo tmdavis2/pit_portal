@@ -1,0 +1,23 @@
+{% extends "pages/home.html" %}
+{% block content %}
+<main>
+    <div class="card">
+        <h1>Welcome to the Leaderboards Page!</h1>
+        <h3>Here you can add your stats for spe</h3>
+    </div>
+    <div class="card-container">
+        <div class="card">
+            <h2>Top Player <i class="fa-solid fa-trophy"></i></h2>
+            <h3>John Doe</h3>
+        </div>
+        <div class="card">
+            <h2>Total Games Played <i class="fa-solid fa-gamepad"></i></h2>
+            <h3>123</h3>
+        </div>
+        <div class="card">
+            <h2>Weekly Scores <i class="fa-solid fa-chart-simple"></i></h2>
+            <canvas id="weeklyScoresChart"></canvas>
+        </div>
+    </div>
+</main> 
+{% endblock %}
