@@ -33,7 +33,7 @@ def stats_view(request):
 
     return render(request, "stats/stats.html", context)
 
-
+@login_required
 def leaderboard_view(request):
     # Optionally, we could filter by game if needed
     kda_leaderboard = PlayerStats.objects.all().order_by('-kills')
@@ -46,3 +46,13 @@ def leaderboard_view(request):
         'winrate_leaderboard': winrate_leaderboard,
     }
     return render(request, "stats/leaderboard.html", context)
+
+@login_required
+def profile_view(request):
+    # Get all stats for the current user
+    user_stats = PlayerStats.objects.filter(user=request.user)
+
+    context = {
+        "user_stats": user_stats
+    }
+    return render(request, "stats/profile.html", context)

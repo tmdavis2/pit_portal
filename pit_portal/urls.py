@@ -25,6 +25,7 @@ urlpatterns = [
     path("", pages_views.home_view, name="home"),
     path("stats", stats_views.stats_view, name="stats"),
     path("leaderboard", stats_views.leaderboard_view, name="leaderboard"),
+    path("profile", stats_views.profile_view, name="profile"),
     path("signup/", accounts_views.signup_view, name="signup"),
     path("login/", accounts_views.login_view, name="login"),
     path("logout/", accounts_views.logout_view, name="logout"),
