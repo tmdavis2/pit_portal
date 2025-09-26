@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from pages import views as pages_views
 from accounts import views as accounts_views
+from stats import views as stats_views
 
 urlpatterns = [
     path('admin', admin.site.urls),
     path("", pages_views.home_view, name="home"),
-    path("stats", pages_views.stats_view, name="stats"),
-    path("leaderboard", pages_views.leaderboard_view, name="leaderboard"),
+    path("stats", stats_views.stats_view, name="stats"),
+    path("leaderboard", stats_views.leaderboard_view, name="leaderboard"),
     path("signup/", accounts_views.signup_view, name="signup"),
     path("login/", accounts_views.login_view, name="login"),
     path("logout/", accounts_views.logout_view, name="logout"),
