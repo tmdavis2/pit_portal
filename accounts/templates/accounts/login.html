@@ -1,31 +1,80 @@
-<!--PUT HTML HERE-->
-<!--CSS CAN BE PUT IN A CSS FILE BELOW THESE HTMLS FILES-->
+<style>
+  .login {
+    background-color: #300499;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 10px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .login:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
+  .signup {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 10px;
+    border: 1px solid #300499;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 90%;
+    padding: 12px;
+    margin-top: 10px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .signup:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
+</style>
 
 {% extends "pages/home.html" %}
 {% block content %}
 <div class="card" style="max-width: 400px; margin: auto;">
-  <h2>Login</h2>
-
-  {% if form.errors %}
-    <p style="color: red;">Your username or password didn’t match. Try again.</p>
+  <!--Red Box appears-->
+  {% if form.non_field_errors %}
+      <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 10px; border-radius: 6px; margin-bottom: 16px;">
+          {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+          {% endfor %}
+      </div>
   {% endif %}
 
   <form method="post">
     {% csrf_token %}
-    <div>
+    <div class="card">
       <label for="id_username">Username:</label>
       {{ form.username }}
     </div>
-    <div>
+    <div class="card">
       <label for="id_password">Password:</label>
       {{ form.password }}
     </div>
     
-    <button type="submit">Login</button>
+    <button type="submit" class="login">Login</button>
 
-    <hr style="border: none; border-top: 1px solid #ccc; margin: 12px 0;">
+    <hr style="margin: 12px 0; color: #b0b0b0;">
 
-    <li><a href="/signup">Sign up</a></li>
+    <a href="/signup" class="signup">Sign up</a>
   </form>
 </div>
+
+<script>
+    // Fade out the alert after 5 seconds
+    const errorBox = document.getElementById('form-error');
+    if (errorBox) {
+        setTimeout(() => {
+            errorBox.style.transition = 'opacity 1s ease';
+            errorBox.style.opacity = '0';
+            setTimeout(() => errorBox.remove(), 1000);
+        }, 5000);
+    }
+</script>
 {% endblock %}

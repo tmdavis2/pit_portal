@@ -1,13 +1,71 @@
-<!--PUT HTML HERE-->
-<!--CSS CAN BE PUT IN A CSS FILE BELOW THESE HTMLS FILES-->
+<style>
+  .signup {
+    background-color: #300499;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 10px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .signup:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
+  .login {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 10px;
+    border: 1px solid #300499;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 90%;
+    padding: 12px;
+    margin-top: 10px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .login:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
+</style>
+
 {% extends "pages/home.html" %}
 {% block content %}
+
+<!--Red Box appears-->
+{% if form.non_field_errors %}
+    <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 10px; border-radius: 6px; margin-bottom: 16px;">
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
 <div class="card" style="max-width: 400px; margin: auto;">
-  <h2>Sign up</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Sign Up</button>
+    <button type="submit" class="signup">Sign Up</button>
   </form>
+  <hr style="margin: 12px 0; color: #b0b0b0;">
+  <a href="/login" class="login">Log In</a>
 </div>
+
+<script>
+  // Fade out error box after 5s
+  const errorBox = document.getElementById('form-error');
+  if (errorBox) {
+    setTimeout(() => {
+      errorBox.style.transition = 'opacity 1s ease';
+      errorBox.style.opacity = '0';
+      setTimeout(() => errorBox.remove(), 1000);
+    }, 5000);
+  }
+</script>
 {% endblock %}
