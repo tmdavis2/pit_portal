@@ -1,16 +1,18 @@
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+# accounts/views.py
 from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import CustomUserCreationForm
 
 def signup_view(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # auto login after signup
+            login(request, user)  # Auto-login after signup
             return redirect("home")
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, "accounts/signup.html", {"form": form})
 
 def login_view(request):
