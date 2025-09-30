@@ -1,0 +1,32 @@
+{% extends "pages/home.html" %}
+{% block content %}
+<main>
+    <div class="card">
+        <h1>Welcome, {{ request.user.username }}!</h1>
+        <h3>Here are your registered stats:</h3>
+    </div>
+
+    {% if user_stats %}
+        <div class="card-container" style="justify-content: center;">
+            {% for stat in user_stats %}
+                <div class="card">
+                    <h2>{{ stat.game }}</h2>
+                    <ul style="list-style: none; padding-left: 0; text-align: left;">
+                        {% if stat.custom_stats %}
+                            {% for key, value in stat.custom_stats.items %}
+                                <li><strong>{{ key|capfirst}}:</strong> {{ value }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No stats recorded yet.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card" style="color: #555;">
+            <p>You have no registered stats yet. Go update your stats!</p>
+        </div>
+    {% endif %}
+</main>
+{% endblock %}
