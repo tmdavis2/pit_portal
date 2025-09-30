@@ -6,12 +6,10 @@ from .game_fields import GAME_FIELDS
 
 @login_required
 def stats_view(request):
-    # Get the selected game from GET (dropdown) or POST (form submission)
     selected_game = request.POST.get("game") or request.GET.get("game") or None
 
     player_stats = None
     if selected_game:
-        # Get existing stats for this user + game, or create new if none exists
         player_stats, created = PlayerStats.objects.get_or_create(
             user=request.user,
             game=selected_game
@@ -20,7 +18,7 @@ def stats_view(request):
     if request.method == "POST" and selected_game:
         form = PlayerStatsForm(request.POST, instance=player_stats, game=selected_game)
         if form.is_valid():
-            form.save()  # overwrites the existing stats for this game
+            form.save()
             return redirect("leaderboard")
     else:
         form = PlayerStatsForm(instance=player_stats, game=selected_game) if selected_game else None

@@ -7,19 +7,17 @@
     </div>
 
     <div class="card">
-        <!-- Game selection dropdown -->
         <form method="GET" style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px;">
             <label for="game" style="font-weight: bold;">Choose Game:</label>
             <select name="game" id="game" onchange="this.form.submit()" style="padding: 8px; border-radius: 6px;">
                 <option value="">-- Select a game --</option>
                 {% for game in games %}
-                    <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
+                    <option value="{{ game }}" {% if game = selected_game %}selected{% endif %}>{{ game }}</option>
                 {% endfor %}
             </select>
         </form>
 
         {% if form %}
-            <!-- Show general form errors (e.g., no stat updated) -->
             {% if form.non_field_errors %}
                 <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
                     {% for error in form.non_field_errors %}
@@ -28,7 +26,6 @@
                 </div>
             {% endif %}
 
-            <!-- Stats form -->
             <form method="POST" style="display: flex; flex-direction: column; gap: 16px;">
                 {% csrf_token %}
                 {% for field in form %}
