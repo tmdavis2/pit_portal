@@ -1,3 +1,13 @@
 <!--PUT HTML HERE-->
 <!--CSS CAN BE PUT IN A CSS FILE BELOW THESE HTMLS FILES-->
-<p>HELLO THIS IS SIGNUP</p>
+{% extends "pages/home.html" %}
+{% block content %}
+<div class="card" style="max-width: 400px; margin: auto;">
+  <h2>Sign up</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign Up</button>
+  </form>
+</div>
+{% endblock %}

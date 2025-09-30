@@ -7,36 +7,34 @@
             html, body {
                 margin: 0;
                 padding: 0;
-                height: 100%; /* needed for flex layout */
+                height: 100%;
             }
 
             body {
                 display: flex;
                 flex-direction: column;
                 font-family: "Source Sans 3", sans-serif;
-                background-color: #b22234; /* darker American-flag red */
-                color: #1a1aff; /* blue text */
+                background-color: #121212; /* dark background */
+                color: #c0c0c0; /* light gray text */
             }
 
             h1, h2 {
                 text-decoration: underline;
+                color: #d0d0d0;
             }
 
             .navbar {
                 font-family: "Source Code Pro", monospace;
-                font-optical-sizing: auto;
-                font-weight: 750;
-                font-style: normal;
+                font-weight: 700;
                 display: flex;
-                justify-content: space-between;
                 align-items: center;
-                background-color: #f8f1ed; /* white navbar */
-                padding: 10px 20px;
-                border: 5px solid #f40a25;
+                background-color: #1e1e1e; /* dark navbar */
+                padding: 12px 24px;
+                border-bottom: 4px solid #300499; /* red border */
             }
 
             .navbar .name {
-                color: #1a1aff; /* blue text for navbar name */
+                color: #c0c0c0;
                 font-size: 1.5rem;
                 font-weight: bold;
                 text-decoration: none;
@@ -47,6 +45,7 @@
                 display: flex;
                 margin: 0;
                 padding: 0;
+                margin-left: auto;
             }
 
             .navbar ul li {
@@ -55,36 +54,37 @@
 
             .navbar ul li a {
                 text-decoration: none;
-                color: #1a1aff;
+                color: #c0c0c0;
                 font-size: 1rem;
                 padding: 8px 12px;
-                border-radius: 4px;
+                border-radius: 6px;
+                transition: background 0.2s ease, color 0.2s ease;
             }
 
             .navbar ul li a:hover {
-                background-color: #1a1aff;
-                color: #f8f1ed;
+                background-color: #300499;
+                color: #ffffff;
             }
 
             main {
-                flex: 1; /* grows to push footer down */
+                flex: 1;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                padding: 20px;
+                padding: 40px 20px;
             }
 
             .card {
-                background-color: #f8f1ed;
-                color: #1a1aff;
-                padding: 10px;
-                margin: 5px 0;
-                border-radius: 50px;
+                background-color: #1e1e1e;
+                color: #c0c0c0;
+                padding: 20px;
+                margin: 10px 0;
+                border-radius: 16px;
                 max-width: 800px;
                 width: 90%;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                border: 5px solid #f40a25;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.6);
                 text-align: center;
+                border: 3px solid #300499; /* red border */
             }
 
             .card-container {
@@ -93,7 +93,8 @@
                 width: 100%;
                 max-width: 1200px;
                 flex-wrap: wrap;
-                gap: 20px;
+                gap: 24px;
+                margin-top: 20px;
             }
 
             .card-container .card {
@@ -102,15 +103,13 @@
             }
 
             .footer {
-                background-color:#f8f1ed;
-                color:#1a1aff;
+                background-color:#1e1e1e;
+                color:#aaaaaa;
                 text-align:center;
                 padding:20px;
-                border: 5px solid #f40a25;
+                border-top: 3px solid #300499; /* red border */
                 font-family: "Source Code Pro", monospace;
-                font-optical-sizing: auto;
                 font-weight: 600;
-                font-style: normal;
             }
 
             @media (max-width: 600px) {
@@ -134,6 +133,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+        <!--fontawesome stuff-->
+        <script src="https://kit.fontawesome.com/ab1f482029.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <header>
@@ -145,8 +146,8 @@
                     <div style="text-decoration: underline;">Pit Portal</div>
                 </a>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/events">Events</a></li>
+                    <li><a href="/" class="hover:bg-blue-600 hover:text-white px-3 py-2 rounded transition-colors">Home</a></li>
+                    <li><a href="/events" class="hover:bg-blue-600 hover:text-white px-3 py-2 rounded transition-colors">Events</a></li>
                     <li><a href="">Social</a></li>
                     <li><a href="">Stats</a></li>
 
@@ -158,6 +159,7 @@
                 </ul>
             </nav>
         </header>
+        {% block content %}
         <main>
             <div class="card">
                 <h1>Welcome to the Pit Portal!</h1>
@@ -165,19 +167,20 @@
             </div>
             <div class="card-container">
                 <div class="card">
-                    <h2>Events Page</h2>
+                    <h2>Events Page  <i class="fa-solid fa-calendar-days"></i></h2>
                     <h3>**Decription Here**</h3>
                 </div>
                 <div class="card">
-                    <h2>Socials Page</h2>
+                    <h2>Socials Page  <i class="fa-solid fa-comment"></i></h2>
                     <h3>**Decription Here**</h3>
                 </div>
                 <div class="card">
-                    <h2>Stats Page</h2>
+                    <h2>Stats Page  <i class="fa-solid fa-chart-simple"></i></h2>
                     <h3>**Decription Here**</h3>
                 </div>
             </div>
         </main> 
+        {% endblock %}
         <footer class="footer">
             &copy; 2025 Pit Portal. All rights reserved.
         </footer> 
