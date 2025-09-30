@@ -23,6 +23,7 @@ from stats import views as stats_views
 urlpatterns = [
     path('admin', admin.site.urls),
     path("", pages_views.home_view, name="home"),
+    path("events/", pages_views.events_view, name="events"),
     path("stats", stats_views.stats_view, name="stats"),
     path("leaderboard", stats_views.leaderboard_view, name="leaderboard"),
     path("profile", stats_views.profile_view, name="profile"),
