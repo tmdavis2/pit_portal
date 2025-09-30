@@ -6,29 +6,18 @@
         <h3>Here are your registered stats:</h3>
     </div>
 
-    <!--CURRENTLY THE STATS ARE NOT LINED UP WITH THE STATS THAT ARE FOR EACH GAME. WILL FIX LATER-->
-
     {% if user_stats %}
-        <div class="card-container", style="justify-content: center;">
+        <div class="card-container" style="justify-content: center;">
             {% for stat in user_stats %}
                 <div class="card">
                     <h2>{{ stat.game }}</h2>
                     <ul style="list-style: none; padding-left: 0; text-align: left;">
-                        <li><strong>Kills:</strong> {{ stat.kills }}</li>
-                        <li><strong>Deaths:</strong> {{ stat.deaths }}</li>
-                        <li><strong>Assists:</strong> {{ stat.assists }}</li>
-                        <li><strong>Hours Played:</strong> {{ stat.hours_played }}</li>
-                        <li><strong>Games Played:</strong> {{ stat.games_played }}</li>
-                        <li><strong>Games Won:</strong> {{ stat.games_won }}</li>
-                        <li><strong>Win Rate:</strong> {{ stat.win_rate|floatformat:2 }}%</li>
-                        <li><strong>KDA:</strong> {{ stat.kda|floatformat:2 }}</li>
-                        {% if stat.current_rank %}
-                            <li><strong>Current Rank:</strong> {{ stat.current_rank }}</li>
-                        {% endif %}
                         {% if stat.custom_stats %}
                             {% for key, value in stat.custom_stats.items %}
-                                <li><strong>{{ key|title }}:</strong> {{ value }}</li>
+                                <li><strong>{{ key|capfirst}}:</strong> {{ value }}</li>
                             {% endfor %}
+                        {% else %}
+                            <li>No stats recorded yet.</li>
                         {% endif %}
                     </ul>
                 </div>

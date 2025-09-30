@@ -35,17 +35,7 @@ def stats_view(request):
 
 @login_required
 def leaderboard_view(request):
-    # Optionally, we could filter by game if needed
-    kda_leaderboard = PlayerStats.objects.all().order_by('-kills')
-    hours_leaderboard = PlayerStats.objects.all().order_by('-hours_played')
-    winrate_leaderboard = sorted(PlayerStats.objects.all(), key=lambda p: p.win_rate(), reverse=True)
-
-    context = {
-        'kda_leaderboard': kda_leaderboard,
-        'hours_leaderboard': hours_leaderboard,
-        'winrate_leaderboard': winrate_leaderboard,
-    }
-    return render(request, "stats/leaderboard.html", context)
+    return render(request, "stats/leaderboard.html")
 
 @login_required
 def profile_view(request):
