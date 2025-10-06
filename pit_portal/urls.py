@@ -18,13 +18,19 @@ from django.contrib import admin
 from django.urls import path
 from pages import views as pages_views
 from accounts import views as accounts_views
+from stats import views as stats_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path("", pages_views.home_view, name="home"),
     path("events/", pages_views.events_view, name="events"),
+    path("stats", stats_views.stats_view, name="stats"),
+    path("leaderboard", stats_views.leaderboard_view, name="leaderboard"),
+    path("profile", stats_views.profile_view, name="profile"),
     path("signup/", accounts_views.signup_view, name="signup"),
     path("login/", accounts_views.login_view, name="login"),
     path("logout/", accounts_views.logout_view, name="logout"),
 ]
 
+# custom error handlers (must be set at the root urls.py level)
+handler404 = "pages.views.page404_view"

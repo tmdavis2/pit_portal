@@ -1,0 +1,70 @@
+{% extends "pages/home.html" %}
+{% block content %}
+<main>
+    <div class="card">
+        <h1>Update Your Stats</h1>
+        <h3>Track your stats for each game you play</h3>
+    </div>
+
+    <div class="card">
+        <form method="GET" style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px;">
+            <label for="game" style="font-weight: bold;">Choose Game:</label>
+            <select name="game" id="game" onchange="this.form.submit()" style="padding: 8px; border-radius: 6px;">
+                <option value="">-- Select a game --</option>
+                {% for game in games %}
+                    <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        {% if form %}
+            <!--Red Box appears-->
+            {% if form.non_field_errors %}
+                <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div style="text-align: left;">
+                        <label for="{{ field.id_for_label }}" style="font-weight: bold; display: block; margin-bottom: 4px;">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p style="color: #ff5555; font-size: 0.9rem;">{{ field.errors }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" style="
+                    background-color: #300499; 
+                    color: #ffffff; 
+                    padding: 8px 12px; 
+                    border-radius: 8px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    margin-top: 12px;">
+                    Save Stats
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</main>
+
+<script>
+    // Fade out the alert after 5 seconds
+    const errorBox = document.getElementById('form-error');
+    if (errorBox) {
+        setTimeout(() => {
+            errorBox.style.transition = 'opacity 1s ease';
+            errorBox.style.opacity = '0';
+            setTimeout(() => errorBox.remove(), 1000);
+        }, 5000);
+    }
+</script>
+{% endblock %}
