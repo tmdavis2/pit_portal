@@ -5,47 +5,62 @@ from .game_fields import GAME_FIELDS
 class PlayerStatsForm(forms.ModelForm):
     class Meta:
         model = PlayerStats
-        fields = []  # no base fields, all dynamic
+        fields = []
 
     def __init__(self, *args, game=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.game = game
 
-        # Add dynamic game-specific fields
+        # Add game-specific fields
         if game and game in GAME_FIELDS:
             for field_name, field_type in GAME_FIELDS[game].items():
+                label = field_name.replace("_", " ").title()
                 field_kwargs = {
-                    'label': field_name.replace("_", " ").title(),
+                    'label': label,
                     'required': False,
                 }
-                if field_type == "int":
-                    self.fields[field_name] = forms.IntegerField(**field_kwargs)
-                elif field_type == "float":
-                    self.fields[field_name] = forms.FloatField(**field_kwargs)
-                else:
-                    self.fields[field_name] = forms.CharField(**field_kwargs)
 
-        # Pre-fill form with existing stats
-        if self.instance and self.instance.custom_stats:
-            for key, value in self.instance.custom_stats.items():
-                if key in self.fields:
-                    self.fields[key].initial = value
+                if field_type == "int":
+                    self.fields[field_name] = forms.IntegerField(
+                        **field_kwargs,
+                        widget=forms.NumberInput(attrs={"min": 0, "step": 1})
+                    )
+                elif field_type == "float":
+                    self.fields[field_name] = forms.FloatField(
+                        **field_kwargs,
+                        widget=forms.NumberInput(attrs={"min": 0, "step": "0.01"})
+                    )
+                else:
+                    self.fields[field_name] = forms.CharField(
+                        **field_kwargs,
+                        widget=forms.TextInput(attrs={"maxlength": 100})
+                    )
 
     def clean(self):
         cleaned_data = super().clean()
-        # Reject if all fields are blank/empty
+        # doesnt let submit if all fields are blank
         if not any(value not in [None, ""] for value in cleaned_data.values()):
             raise forms.ValidationError("Please fill in at least one field to update stats.")
+        for field_name, field_type in GAME_FIELDS.get(self.game, {}).items():
+            value = cleaned_data.get(field_name)
+            if value in [None, ""]:
+                continue
+            if field_type == "int" and not isinstance(value, int):
+                self.add_error(field_name, "Must be an integer.")
+            elif field_type == "float" and not isinstance(value, float):
+                self.add_error(field_name, "Must be a decimal number.")
+            elif field_type == "char" and not isinstance(value, str):
+                self.add_error(field_name, "Must be text.")
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-
-        # Collect all dynamic fields into custom_stats
         custom_stats = instance.custom_stats or {}
+
         for field_name, value in self.cleaned_data.items():
             if value not in [None, ""]:
                 custom_stats[field_name] = value
+            # If the value is blank, don't erase previous data
 
         instance.custom_stats = custom_stats
 
