@@ -1,19 +1,75 @@
 {% extends "pages/home.html" %}
 {% block content %}
-<main>
-    <div class="card">
-        <h1>Welcome to the Leaderboards Page!</h1>
-    </div>
-    <div class="card-container">
-        <div class="card">
+<div class="card">
+  <h1>Game Leaderboards</h1>
+  <p>Top 3 players by <b>Wins</b> and <b>Rank</b> per game.</p>
+</div>
 
-        </div>
-        <div class="card">
+<div id="leaderboard-container" class="leaderboard-grid"></div>
 
-        </div>
-        <div class="card">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const leaderboards = JSON.parse('{{ leaderboards_json|escapejs }}');
+  const container = document.getElementById("leaderboard-container");
 
-        </div>
-    </div>
-</main> 
+  Object.keys(leaderboards).forEach(game => {
+    const data = leaderboards[game];
+
+    const section = document.createElement("div");
+    section.classList.add("card");
+    section.innerHTML = `
+      <h2>${game}</h2>
+      <canvas id="${game.replace(/\s+/g, '_')}_wins"></canvas>
+      <canvas id="${game.replace(/\s+/g, '_')}_rank"></canvas>
+    `;
+    container.appendChild(section);
+
+    // Bar chart for wins
+    new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_wins`), {
+      type: 'bar',
+      data: {
+        labels: data.wins.map(p => p.user),
+        datasets: [{
+          label: 'Total Wins',
+          data: data.wins.map(p => p.value),
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Top 3 by Wins' },
+          legend: { display: false }
+        },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Bar chart for ranks
+    new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_rank`), {
+      type: 'bar',
+      data: {
+        labels: data.rank.map(p => p.user),
+        datasets: [{
+          label: 'Rank (Higher = Better)',
+          data: data.rank.map((p, i) => i + 1), // visual placeholder
+          borderWidth: 2
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          title: { display: true, text: 'Top 3 by Rank' },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${data.rank[ctx.dataIndex].value}`
+            }
+          },
+          legend: { display: false }
+        },
+        scales: { x: { display: false }, y: { ticks: { color: '#fff' } } }
+      }
+    });
+  });
+</script>
 {% endblock %}

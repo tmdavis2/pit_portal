@@ -1,5 +1,5 @@
 <style>
-  .signup {
+  .signup-btn {
     background-color: #300499;
     color: #fff;
     font-size: 1rem;
@@ -12,11 +12,11 @@
     border-radius: 10px;
     transition: background 0.3s, transform 0.2s;
   }
-  .signup:hover {
+  .signup-btn:hover {
     cursor: pointer;
     transform: translateY(-2px);
   }
-  .login {
+  .login-link {
     display: inline-block;
     text-decoration: none;
     border-radius: 10px;
@@ -24,48 +24,78 @@
     color: #fff;
     font-size: 1rem;
     font-weight: 700;
-    width: 90%;
+    width: 100%;
     padding: 12px;
     margin-top: 10px;
+    text-align: center;
     transition: background 0.3s, transform 0.2s;
   }
-  .login:hover {
+  .login-link:hover {
     cursor: pointer;
     transform: translateY(-2px);
+  }
+  .form-container {
+    max-width: 380px; /* smaller max width */
+    width: 90%;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #1e1e1e;
+    border-radius: 16px;
+    border: 2px solid #300499;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+  .form-card {
+    margin-bottom: 16px;
+  }
+  .form-card label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .form-card input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #121212;
+    color: #fff;
+    font-size: 1rem;
+  }
+  .form-card input:focus {
+    outline: none;
+    border-color: #300499;
+    box-shadow: 0 0 5px #300499;
+  }
+  .field-error {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-top: 4px;
   }
 </style>
 
 {% extends "pages/home.html" %}
 {% block content %}
 
-<!--Red Box appears-->
-{% if form.non_field_errors %}
-    <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 10px; border-radius: 6px; margin-bottom: 16px;">
-        {% for error in form.non_field_errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
-    </div>
-{% endif %}
-
-<div class="card" style="max-width: 400px; margin: auto;">
+<div class="form-container">
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="signup">Sign Up</button>
+    {% for field in form %}
+      <div class="form-card">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+          {% for error in field.errors %}
+            <div class="field-error">{{ error }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="signup-btn">Sign Up</button>
   </form>
-  <hr style="margin: 12px 0; color: #b0b0b0;">
-  <a href="/login" class="login">Log In</a>
+
+  <hr style="margin: 16px 0; color: #b0b0b0;">
+  <a href="/login" class="login-link">Log In</a>
 </div>
 
-<script>
-  // Fade out error box after 5s
-  const errorBox = document.getElementById('form-error');
-  if (errorBox) {
-    setTimeout(() => {
-      errorBox.style.transition = 'opacity 1s ease';
-      errorBox.style.opacity = '0';
-      setTimeout(() => errorBox.remove(), 1000);
-    }, 5000);
-  }
-</script>
 {% endblock %}

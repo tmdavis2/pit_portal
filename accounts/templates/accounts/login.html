@@ -33,6 +33,33 @@
     cursor: pointer;
     transform: translateY(-2px);
   }
+  .form-card {
+    background-color: #1e1e1e;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 2px solid #300499;
+    text-align: left;
+  }
+  .form-card label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .form-card input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #121212;
+    color: #fff;
+    font-size: 1rem;
+  }
+  .form-card input:focus {
+    outline: none;
+    border-color: #300499;
+    box-shadow: 0 0 5px #300499;
+  }
 </style>
 
 {% extends "pages/home.html" %}
@@ -49,11 +76,11 @@
 
   <form method="post">
     {% csrf_token %}
-    <div class="card">
+    <div class="form-card">
       <label for="id_username">Username:</label>
       {{ form.username }}
     </div>
-    <div class="card">
+    <div class="form-card">
       <label for="id_password">Password:</label>
       {{ form.password }}
     </div>
