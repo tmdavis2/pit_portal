@@ -1,19 +1,54 @@
-{% extends "pages/home.html" %}
-{% block content %}
-<main>
-    <div class="card">
-        <h1>Welcome to the Leaderboards Page!</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Pit Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">Leaderboard</h1>
+        
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6">
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2">Select Game:</label>
+                <select class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                    <option>Basketball</option>
+                    <option>Soccer</option>
+                    <option>Volleyball</option>
+                </select>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-left py-3 px-4">Rank</th>
+                            <th class="text-left py-3 px-4">Player</th>
+                            <th class="text-left py-3 px-4">Points</th>
+                            <th class="text-left py-3 px-4">Games Played</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-700 hover:bg-gray-700">
+                            <td class="py-3 px-4">1</td>
+                            <td class="py-3 px-4">Sample Player</td>
+                            <td class="py-3 px-4">150</td>
+                            <td class="py-3 px-4">12</td>
+                        </tr>
+                        <tr class="border-b border-gray-700 hover:bg-gray-700">
+                            <td class="py-3 px-4 text-gray-400" colspan="4">More players will appear here as stats are recorded</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <a href="/" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg inline-block">Back to Home</a>
+        </div>
     </div>
-    <div class="card-container">
-        <div class="card">
-
-        </div>
-        <div class="card">
-
-        </div>
-        <div class="card">
-
-        </div>
-    </div>
-</main> 
-{% endblock %}
+</body>
+</html>

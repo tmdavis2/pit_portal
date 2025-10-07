@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!x82wqd@bs5&z%ehrayc5dsyp$=cq#1hv!md%3m6refaojr^hr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# set false to show your 404 page
 DEBUG = True
-# In production, this should be replaced with a proper domain name: 'yourdomain.com'
-# otherwise: use '*' for testing
+
 ALLOWED_HOSTS = []
 
 
@@ -42,17 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'pages',
-    'stats',
     'tailwind',
+    'stats',
     'theme',
-
 ]
-
-TAILWIND_APP_NAME = 'theme'
-
-# settings.py
-NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"  # Adjust path as needed
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -132,9 +122,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
-LOGIN_URL = '/login/'
+TAILWIND_APP_NAME = 'theme'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
