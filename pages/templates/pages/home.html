@@ -2,67 +2,139 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pit Portal</title>
-        <link rel="stylesheet" href="{% static 'styles.css' %}">
-        <link rel="icon" type="image/png" href="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-        <!--fontawesome stuff-->
-        <script src="https://kit.fontawesome.com/ab1f482029.js" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <header>
-            <nav class="navbar">
-                <a href="/" class="name" style="display: flex; align-items: center;">
-                    <img src="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}" 
-                        alt="Logo" 
-                        style="height:60px; margin-right:10px;">
-                    <div style="text-decoration: underline;">Pit Portal</div>
-                </a>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/events">Events</a></li>
-                    <li><a href="">Social</a></li>
-                    <li><a href="/leaderboard">Leaderboard</a></li>
+  <head>
+    <style>
+        /* ===== BUTTONS ===== */
+        .btn-primary {
+            display: inline-block;
+            background-color: #300499;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+        }
 
-                    {% if user.is_authenticated %}
-                        <li><a href="/stats">Stats</a></li>
-                        <li><a href="/profile">Your Profile</a></li>
-                        <li><a href="/logout">Logout</a></li>
-                    {% else %}
-                        <li><a href="/login">Login</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </header>
-        {% block content %}
-        <main>
-            <div class="card">
-                <h1>Welcome to the Pit Portal!</h1>
-                <h3>Our mission goal for this website is to supply working features to the existing snake pit facility that is on campus: Event Board, Student Socials, and Game Stats</h3>
-            </div>
-            <div class="card-container">
-                <div class="card">
-                    <h2>Events Page  <i class="fa-solid fa-calendar-days"></i></h2>
-                    <h3>**Decription Here**</h3>
-                </div>
-                <div class="card">
-                    <h2>Socials Page  <i class="fa-solid fa-comment"></i></h2>
-                    <h3>**Decription Here**</h3>
-                </div>
-                <div class="card">
-                    <h2>Stats Page  <i class="fa-solid fa-chart-simple"></i></h2>
-                    <h3>**Decription Here**</h3>
-                </div>
-            </div>
-        </main> 
-        {% endblock %}
-        <footer class="footer">
-            &copy; 2025 Pit Portal. All rights reserved.
-        </footer> 
-    </body>
+        .btn-primary:hover {
+            cursor: pointer;
+            transform: translateY(-2px);
+            box-shadow: 0 0 12px rgba(48, 4, 153, 0.5);
+        }
+    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pit Portal</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/ab1f482029.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="/" class="name">
+          <img
+            src="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}"
+            alt="Logo"
+            style="height:50px;"
+          />
+          <span>Pit Portal</span>
+        </a>
+
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/events">Events</a></li>
+          <li><a href="">Social</a></li>
+          <li><a href="/leaderboard">Leaderboard</a></li>
+
+          {% if user.is_authenticated %}
+          <li><a href="/stats">Stats</a></li>
+          <li><a href="/profile">Your Profile</a></li>
+          <li><a href="/logout">Logout</a></li>
+          {% else %}
+          <li><a href="/login">Login</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    {% block content %}
+    <main class="flex flex-col flex-center px-4 py-4">
+
+      <!-- Hero Section -->
+      <section class="card shadow text-center" style="max-width:900px;">
+        <h1 class="text-accent">Welcome to the Pit Portal!</h1>
+        <p class="mt-4 text-light">
+          Your one-stop hub for Snake Pit activities, community events, and
+          player stats. Whether you’re here to compete, socialize, or stay
+          informed — the Pit Portal keeps you connected.
+        </p>
+      </section>
+
+      <!-- Features -->
+      <section class="card-container mt-6">
+        <div class="card">
+          <i class="fa-solid fa-calendar-days fa-2x text-accent mb-4"></i>
+          <h2>Events Page</h2>
+          <p class="text-muted mt-2">
+            Stay up-to-date with upcoming tournaments, parties, and special
+            events happening at the Snake Pit.
+          </p>
+          <a href="/events" class="btn-primary">Explore Events</a>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-comment fa-2x text-accent mb-4"></i>
+          <h2>Socials Page</h2>
+          <p class="text-muted mt-2">
+            Connect with other students, share your achievements, and build your
+            community within the Snake Pit.
+          </p>
+          <a href="#" class="btn-primary">Join the Community</a>
+        </div>
+
+        <div class="card">
+          <i class="fa-solid fa-chart-simple fa-2x text-accent mb-4"></i>
+          <h2>Stats Page</h2>
+          <p class="text-muted mt-2">
+            Track your performance, compare with friends, and rise up the
+            leaderboards across multiple games.
+          </p>
+          <a href="/stats" class="btn-primary">View Stats</a>
+        </div>
+      </section>
+    </main>
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer">
+      &copy; 2025 Pit Portal. All rights reserved.
+    </footer>
+  </body>
 </html>
