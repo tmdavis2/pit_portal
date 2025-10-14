@@ -1,75 +1,261 @@
 {% extends "pages/home.html" %}
 {% block content %}
-<div class="card">
-  <h1>Game Leaderboards</h1>
-  <p>Top 3 players by <b>Wins</b> and <b>Rank</b> per game.</p>
-</div>
 
-<div id="leaderboard-container" class="leaderboard-grid"></div>
+<style>
+  .leaderboard-page {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 16px;
+  }
+
+  .leaderboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .leaderboard-header h1 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .leaderboard-header p {
+    color: #b0b0b0;
+    font-size: 1rem;
+  }
+
+  .leaderboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .leaderboard-card {
+    background-color: #1e1e1e;
+    border: 2px solid #300499;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+
+  .leaderboard-title {
+    color: #fff;
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+  }
+
+  .chart-pair {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .chart-card {
+    flex: 1 1 45%;
+    background-color: #121212;
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 320px;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 300px !important;
+  }
+
+  @media (max-width: 768px) {
+    .chart-card {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+
+<div class="leaderboard-page">
+  <div class="leaderboard-header">
+    <h1>Game Leaderboards</h1>
+    <p>Top 3 players by <b>KDA</b> and <b>Rank</b> per game.<br>
+       For <b>Super Smash Bros Ultimate</b>: <b>Time Played</b> and <b>Win %</b>.
+    </p>
+  </div>
+
+  <div id="leaderboard-container" class="leaderboard-grid"></div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const leaderboards = JSON.parse('{{ leaderboards_json|escapejs }}');
   const container = document.getElementById("leaderboard-container");
 
+  // Define possible rank orders
+  const rankOrders = {
+    "Valorant": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"],
+    "League of Legends": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grandmaster", "Challenger"],
+    "Overwatch": ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Champion", "Top 500"],
+  };
+
   Object.keys(leaderboards).forEach(game => {
     const data = leaderboards[game];
 
     const section = document.createElement("div");
-    section.classList.add("card");
+    section.classList.add("leaderboard-card");
+
+    let chart1Label, chart2Label, chart1Title, chart2Title;
+    let chart1Data, chart2Data;
+
+    if (game === "Super Smash Bros Ultimate") {
+      // Smash uses time played and win %
+      chart1Label = "Time Played (hrs)";
+      chart2Label = "Win Percentage";
+      chart1Title = "Top 3 by Time Played";
+      chart2Title = "Top 3 by Win %";
+      chart1Data = data.time_played;
+      chart2Data = data.win_percentage;
+    } else {
+      // Other games use KDA and rank
+      chart1Label = "KDA ((Kills + Assists) / Deaths)";
+      chart2Label = "Rank";
+      chart1Title = "Top 3 by KDA";
+      chart2Title = "Top 3 by Rank";
+      chart1Data = data.kda;
+      chart2Data = data.rank;
+    }
+
     section.innerHTML = `
-      <h2>${game}</h2>
-      <canvas id="${game.replace(/\s+/g, '_')}_wins"></canvas>
-      <canvas id="${game.replace(/\s+/g, '_')}_rank"></canvas>
+      <h2 class="leaderboard-title">${game}</h2>
+      <div class="chart-pair">
+        <div class="chart-card">
+          <canvas id="${game.replace(/\s+/g, '_')}_chart1"></canvas>
+        </div>
+        <div class="chart-card">
+          <canvas id="${game.replace(/\s+/g, '_')}_chart2"></canvas>
+        </div>
+      </div>
     `;
     container.appendChild(section);
 
-    // Bar chart for wins
-    new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_wins`), {
+    // === Chart 1 ===
+    new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart1`), {
       type: 'bar',
       data: {
-        labels: data.wins.map(p => p.user),
+        labels: chart1Data.map(p => p.user),
         datasets: [{
-          label: 'Total Wins',
-          data: data.wins.map(p => p.value),
+          label: chart1Label,
+          data: chart1Data.map(p => p.value),
+          backgroundColor: '#300499',
+          borderColor: '#5a32d6',
           borderWidth: 2
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          title: { display: true, text: 'Top 3 by Wins' },
-          legend: { display: false }
-        },
-        scales: { y: { beginAtZero: true } }
-      }
-    });
-
-    // Bar chart for ranks
-    new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_rank`), {
-      type: 'bar',
-      data: {
-        labels: data.rank.map(p => p.user),
-        datasets: [{
-          label: 'Rank (Higher = Better)',
-          data: data.rank.map((p, i) => i + 1), // visual placeholder
-          borderWidth: 2
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        plugins: {
-          title: { display: true, text: 'Top 3 by Rank' },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${data.rank[ctx.dataIndex].value}`
-            }
+          title: {
+            display: true,
+            text: chart1Title,
+            color: '#fff',
+            font: { size: 16 }
           },
           legend: { display: false }
         },
-        scales: { x: { display: false }, y: { ticks: { color: '#fff' } } }
+        scales: {
+          x: {
+            ticks: { color: '#ccc' },
+            grid: { color: '#333' }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#ccc' },
+            grid: { color: '#333' }
+          }
+        }
       }
     });
+
+    // === Chart 2 (Rank or Win %) ===
+    if (game === "Super Smash Bros Ultimate") {
+      // Win percentage chart
+      new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart2`), {
+        type: 'bar',
+        data: {
+          labels: chart2Data.map(p => p.user),
+          datasets: [{
+            label: chart2Label,
+            data: chart2Data.map(p => p.value),
+            backgroundColor: '#04a6ff',
+            borderColor: '#38c4ff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: chart2Title,
+              color: '#fff',
+              font: { size: 16 }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            x: { ticks: { color: '#ccc' }, grid: { color: '#333' } },
+            y: { beginAtZero: true, ticks: { color: '#ccc' }, grid: { color: '#333' } }
+          }
+        }
+      });
+    } else {
+      // Rank chart
+      const ranks = rankOrders[game] || [];
+      new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart2`), {
+        type: 'bar',
+        data: {
+          labels: chart2Data.map(p => p.user),
+          datasets: [{
+            label: 'Rank',
+            data: chart2Data.map(p => ranks.indexOf(p.value) + 1 || 0),
+            backgroundColor: '#04a6ff',
+            borderColor: '#38c4ff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: chart2Title,
+              color: '#fff',
+              font: { size: 16 }
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${chart2Data[ctx.dataIndex].value}`
+              }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#ccc' },
+              grid: { color: '#333' }
+            },
+            y: {
+              ticks: {
+                color: '#ccc',
+                callback: value => ranks[value - 1] || ''
+              },
+              beginAtZero: false,
+              min: 1,
+              max: ranks.length,
+              grid: { color: '#333' }
+            }
+          }
+        }
+      });
+    }
   });
 </script>
+
 {% endblock %}
