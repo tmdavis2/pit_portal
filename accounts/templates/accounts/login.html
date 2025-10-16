@@ -1,107 +1,244 @@
+{% extends "pages/home.html" %}
+{% block content %}
 <style>
-  .login {
-    background-color: #300499;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 700;
+  .auth-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* min-height: 100vh; */
+  }
+
+  .auth-card {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .auth-card h1 {
+    color: #ffffff;
+    font-size: 2rem;
+    margin-bottom: 8px;
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .auth-card p {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+  }
+
+  .form-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    animation: slideIn 0.3s ease;
+    font-size: 0.9rem;
+  }
+
+  .form-error p {
+    margin: 0;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+
+  .form-group input {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    background-color: rgba(30, 30, 30, 0.9);
+    color: #ffffff;
+    font-size: 1rem;
+    font-family: "Source Sans 3", sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input::placeholder {
+    color: #808080;
+  }
+
+  .form-group input:hover {
+    border-color: rgba(168, 85, 247, 0.6);
+    background-color: rgba(35, 35, 35, 0.9);
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+    background-color: rgba(35, 35, 35, 0.95);
+  }
+
+  .auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn-login {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+    padding: 13px 24px;
     border: none;
     border-radius: 10px;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .login:hover {
-    cursor: pointer;
-    transform: translateY(-2px);
-  }
-  .signup {
-    display: inline-block;
-    text-decoration: none;
-    border-radius: 10px;
-    border: 1px solid #300499;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 700;
-    width: 90%;
-    padding: 12px;
-    margin-top: 10px;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .signup:hover {
-    cursor: pointer;
-    transform: translateY(-2px);
-  }
-  .form-card {
-    background-color: #1e1e1e;
-    padding: 16px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    border: 2px solid #300499;
-    text-align: left;
-  }
-  .form-card label {
-    display: block;
-    margin-bottom: 6px;
     font-weight: 600;
-  }
-  .form-card input {
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #444;
-    background-color: #121212;
-    color: #fff;
     font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
-  .form-card input:focus {
-    outline: none;
-    border-color: #300499;
-    box-shadow: 0 0 5px #300499;
+
+  .btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+  }
+
+  .btn-login:active {
+    transform: translateY(0);
+  }
+
+  .btn-signup {
+    background: transparent;
+    color: #ffffff;
+    padding: 13px 24px;
+    border: 2px solid rgba(168, 85, 247, 0.5);
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-signup:hover {
+    border-color: #a855f7;
+    background-color: rgba(168, 85, 247, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
+  @media (max-width: 600px) {
+    .auth-page {
+      margin: 40px auto;
+    }
+
+    .auth-card {
+      padding: 28px;
+    }
+
+    .auth-card h1 {
+      font-size: 1.5rem;
+    }
+
+    .form-group input {
+      font-size: 16px;
+    }
   }
 </style>
 
-{% extends "pages/home.html" %}
-{% block content %}
-<div class="card" style="max-width: 400px; margin: auto;">
-  <!--Red Box appears-->
-  {% if form.non_field_errors %}
-      <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 10px; border-radius: 6px; margin-bottom: 16px;">
-          {% for error in form.non_field_errors %}
-              <p>{{ error }}</p>
-          {% endfor %}
+<div class="auth-page">
+  <div class="auth-card">
+    <h1><i class="fa-solid fa-right-to-bracket"></i> Login</h1>
+    <p>Welcome back to Pit Portal</p>
+
+    {% if form.non_field_errors %}
+      <div class="form-error">
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
       </div>
-  {% endif %}
+    {% endif %}
 
-  <form method="post">
-    {% csrf_token %}
-    <div class="form-card">
-      <label for="id_username">Username:</label>
-      {{ form.username }}
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <span style="color: #fca5a5; font-size: 0.85rem; margin-top: 6px;">{{ form.username.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+          <span style="color: #fca5a5; font-size: 0.85rem; margin-top: 6px;">{{ form.password.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="auth-buttons">
+        <button type="submit" class="btn-login">
+          <i class="fa-solid fa-sign-in-alt"></i> Login
+        </button>
+      </div>
+    </form>
+
+    <hr class="divider">
+
+    <div class="auth-buttons">
+      <a href="/signup" class="btn-signup">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </a>
     </div>
-    <div class="form-card">
-      <label for="id_password">Password:</label>
-      {{ form.password }}
-    </div>
-    
-    <button type="submit" class="login">Login</button>
-
-    <hr style="margin: 12px 0; color: #b0b0b0;">
-
-    <a href="/signup" class="signup">Sign up</a>
-  </form>
+  </div>
 </div>
 
 <script>
-    // Fade out the alert after 5 seconds
-    const errorBox = document.getElementById('form-error');
-    if (errorBox) {
-        setTimeout(() => {
-            errorBox.style.transition = 'opacity 1s ease';
-            errorBox.style.opacity = '0';
-            setTimeout(() => errorBox.remove(), 1000);
-        }, 5000);
-    }
+  const errorBox = document.querySelector('.form-error');
+  if (errorBox) {
+    setTimeout(() => {
+      errorBox.style.transition = 'opacity 0.8s ease';
+      errorBox.style.opacity = '0';
+      setTimeout(() => errorBox.remove(), 800);
+    }, 6000);
+  }
 </script>
 {% endblock %}
