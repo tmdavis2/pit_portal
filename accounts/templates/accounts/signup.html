@@ -2,7 +2,7 @@
 {% block content %}
 <style>
   .auth-page {
-    max-width: 50%;
+    max-width: 600px;
     margin: 0 auto;
     padding: 60px 20px;
     display: flex;
@@ -177,6 +177,8 @@
 <div class="auth-page">
   <div class="auth-card">
     <h1><i class="fa-solid fa-user-plus"></i> Create Account</h1>
+    <p>Join Pit Portal and start tracking your stats</p>
+
     <form method="post">
       {% csrf_token %}
       
