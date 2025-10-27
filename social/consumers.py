@@ -1,5 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from .models import Message
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -19,12 +20,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         username = text_data_json["username"]
+        await Message.objects.acreate(room_name=self.room_name, username=username, content=message)
         await self.channel_layer.group_send(
             self.room_group_name,{
                 "type" : "sendMessage" ,
                 "message" : message , 
                 "username" : username ,
             })
+    
     async def sendMessage(self , event) : 
         message = event["message"]
         username = event["username"]
