@@ -9,6 +9,11 @@
     <input id="room-name-input" type="text" size="20" placeholder="Room name" style="width: 200px; padding: 5px;"><br>
     <input id="room-name-submit" type="button" style="width: 200px; padding: 5px;" value="Enter">
 
+    <br><br>
+    Search for a user to start a direct chat:<br>
+    <input id="user-search-input" type="text" size="20" placeholder="Username" style="width: 200px; padding: 5px;"><br>
+    <ul id="user-results" style="list-style: none; padding: 0; max-height: 200px; overflow-y: auto; border: 1px solid #ccc; width: 200px;"></ul>
+
     <script>
         document.querySelector('#room-name-input').focus();
         document.querySelector('#room-name-input').onkeyup = function(e) {
@@ -21,6 +26,39 @@
             var roomName = document.querySelector('#room-name-input').value;
             window.location.pathname = '/social/' + roomName + '/';
         };
+        const userSearchInput = document.querySelector('#user-search-input');
+        const userResults = document.querySelector('#user-results');
+        let debounceTimer;
+
+        userSearchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            const query = this.value.trim();
+            if (query.length < 2) {
+                userResults.innerHTML = '';
+                return;
+            }
+            debounceTimer = setTimeout(() => {
+               fetch(`/social/search-users/?q=${encodeURIComponent(query)}`, {credentials: 'same-origin'})
+                    .then(response => response.json())
+                    .then(data => {
+                        userResults.innerHTML = '';
+                        data.users.forEach(user => {
+                            const li = document.createElement('li');
+                            li.textContent = user.username;
+                            li.style.cursor = 'pointer';
+                            li.style.padding = '5px';
+                            li.addEventListener('click', () => {
+                                // Create a DM room name (e.g., dm_currentuser_selecteduser)
+                                const currentUser = '{{ request.user.username }}';
+                                const roomName = `dm_${[currentUser, user.username].sort().join('_')}`;
+                                window.location.pathname = `/social/${roomName}/`;
+                            });
+                            userResults.appendChild(li);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching users:', error));
+            }, 300);  // Debounce for 300ms
+        });
     </script>
 </body>
 {% endblock %}
