@@ -8,4 +8,4 @@ def page404_view(request, exception):
 
 def events_view(request):
     # Your view logic here
-    return render(request, "events.html")
+    return render(request, "pages/events.html")

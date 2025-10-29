@@ -1,71 +1,222 @@
+{% extends "pages/home.html" %}
+{% block content %}
 <style>
-  .signup {
-    background-color: #300499;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 700;
+  .auth-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .auth-card {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .auth-card h1 {
+    color: #ffffff;
+    font-size: 2rem;
+    margin-bottom: 8px;
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .auth-card p {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+
+  .form-group input {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    background-color: rgba(30, 30, 30, 0.9);
+    color: #ffffff;
+    font-size: 1rem;
+    font-family: "Source Sans 3", sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input::placeholder {
+    color: #808080;
+  }
+
+  .form-group input:hover {
+    border-color: rgba(168, 85, 247, 0.6);
+    background-color: rgba(35, 35, 35, 0.9);
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+    background-color: rgba(35, 35, 35, 0.95);
+  }
+
+  .field-help-text {
+    color: #808080;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  .field-error {
+    color: #fca5a5;
+    font-size: 0.85rem;
+    margin-top: 6px;
+  }
+
+  .field-error li {
+    margin: 4px 0 4px 20px;
+  }
+
+  .auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn-signup {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+    padding: 13px 24px;
     border: none;
     border-radius: 10px;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .signup:hover {
-    cursor: pointer;
-    transform: translateY(-2px);
-  }
-  .login {
-    display: inline-block;
-    text-decoration: none;
-    border-radius: 10px;
-    border: 1px solid #300499;
-    color: #fff;
+    font-weight: 600;
     font-size: 1rem;
-    font-weight: 700;
-    width: 90%;
-    padding: 12px;
-    margin-top: 10px;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .login:hover {
     cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-signup:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+  }
+
+  .btn-signup:active {
+    transform: translateY(0);
+  }
+
+  .btn-login {
+    background: transparent;
+    color: #ffffff;
+    padding: 13px 24px;
+    border: 2px solid rgba(168, 85, 247, 0.5);
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+  }
+
+  .btn-login:hover {
+    border-color: #a855f7;
+    background-color: rgba(168, 85, 247, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
+  @media (max-width: 600px) {
+    .auth-page {
+      margin: 40px auto;
+    }
+
+    .auth-card {
+      padding: 28px;
+    }
+
+    .auth-card h1 {
+      font-size: 1.5rem;
+    }
+
+    .form-group input {
+      font-size: 16px;
+    }
   }
 </style>
 
-{% extends "pages/home.html" %}
-{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <h1><i class="fa-solid fa-user-plus"></i> Create Account</h1>
+    <p>Join Pit Portal and start tracking your stats</p>
 
-<!--Red Box appears-->
-{% if form.non_field_errors %}
-    <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 10px; border-radius: 6px; margin-bottom: 16px;">
-        {% for error in form.non_field_errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+    <form method="post">
+      {% csrf_token %}
+      
+      {% for field in form %}
+        <div class="form-group">
+          {{ field.label_tag }}
+          {{ field }}
+          
+          {% if field.errors %}
+            <div class="field-error">
+              {% for error in field.errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if field.help_text %}
+            <div class="field-help-text">
+              {{ field.help_text|safe }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="auth-buttons">
+        <button type="submit" class="btn-signup">
+          <i class="fa-solid fa-check"></i> Sign Up
+        </button>
+      </div>
+    </form>
+
+    <hr class="divider">
+
+    <div class="auth-buttons">
+      <a href="/login" class="btn-login">
+        <i class="fa-solid fa-sign-in-alt"></i> Already Have An Account?
+      </a>
     </div>
-{% endif %}
-
-<div class="card" style="max-width: 400px; margin: auto;">
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="signup">Sign Up</button>
-  </form>
-  <hr style="margin: 12px 0; color: #b0b0b0;">
-  <a href="/login" class="login">Log In</a>
+  </div>
 </div>
-
-<script>
-  // Fade out error box after 5s
-  const errorBox = document.getElementById('form-error');
-  if (errorBox) {
-    setTimeout(() => {
-      errorBox.style.transition = 'opacity 1s ease';
-      errorBox.style.opacity = '0';
-      setTimeout(() => errorBox.remove(), 1000);
-    }, 5000);
-  }
-</script>
 {% endblock %}

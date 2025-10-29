@@ -37,7 +37,6 @@ GAME_FIELDS = {
         "games_as_most_played": "int",
         "time_played": "int",
         "win_percentage": "float",
-        "current_rank": "char",
         "total_stocks_taken": "int",
     },
 }

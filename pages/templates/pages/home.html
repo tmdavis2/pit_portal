@@ -1,67 +1,139 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pit Portal</title>
-        <link rel="stylesheet" href="{% static 'styles.css' %}">
-        <link rel="icon" type="image/png" href="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-        <!--fontawesome stuff-->
-        <script src="https://kit.fontawesome.com/ab1f482029.js" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <header>
-            <nav class="navbar">
-                <a href="/" class="name" style="display: flex; align-items: center;">
-                    <img src="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}" 
-                        alt="Logo" 
-                        style="height:60px; margin-right:10px;">
-                    <div style="text-decoration: underline;">Pit Portal</div>
-                </a>
-                <ul>
-                    <li><a href="/" class="hover:bg-blue-600 hover:text-white px-3 py-2 rounded transition-colors">Home</a></li>
-                    <li><a href="/events" class="hover:bg-blue-600 hover:text-white px-3 py-2 rounded transition-colors">Events</a></li>
-                    <li><a href="/social">Social</a></li>
-                    <li><a href="/stats">Stats</a></li>
-                    <li><a href="/leaderboard">Leaderboard</a></li>
-                    <li><a href="/profile">Your Profile</a></li>
-                    {% if user.is_authenticated %}
-                        <li><a href="/logout">Logout</a></li>
-                    {% else %}
-                        <li><a href="/login">Login</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </header>
-        {% block content %}
-        <main>
-            <div class="card">
-                <h1>Welcome to the Pit Portal!</h1>
-                <h3>Our mission goal for this website is to supply working features to the existing snake pit facility that is on campus: Event Board, Student Socials, and Game Stats</h3>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pit Portal</title>
+    <link rel="stylesheet" href="{% static 'pages/styles.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ab1f482029.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="background-animation"></div>
+    
+    <header>
+        <nav class="navbar">
+            <a href="/" class="name">
+                <img src="{% static 'pages/images/FSC_Athletics_SnakeHead_Diamond_RGB.png' %}" alt="Logo" class="logo">
+                <div class="logo-text">Pit Portal</div>
+            </a>
+            
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="/events"><i class="fa-solid fa-calendar-days"></i> Events</a></li>
+                <li><a href=""><i class="fa-solid fa-comment"></i> Social</a></li>
+                <li><a href="/leaderboard"><i class="fa-solid fa-trophy"></i> Leaderboard</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="/stats"><i class="fa-solid fa-chart-simple"></i> Stats</a></li>
+                    <li><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
+                    <li><a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                {% else %}
+                    <li><a href="/login" class="login-btn"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    {% block content %}
+    <main>
+        <div class="hero-card card">
+            <h1><i class="fa-solid fa-gamepad"></i> Welcome to the Pit Portal!</h1>
+            <p class="hero-subtitle">Your gateway to the Snake Pit gaming facility</p>
+            <p class="hero-description">Track your gaming stats, compete on leaderboards, schedule tournaments, and connect with fellow gamers across campus.</p>
+        </div>
+
+        <div class="card-container">
+            <div class="card feature-card">
+                <div class="card-icon">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <h2>Events</h2>
+                <p>Schedule and join gaming tournaments, community events, and competitive matches. Stay updated on what's happening at the Snake Pit.</p>
+                <a href="/events" class="card-link">Explore Events <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-            <div class="card-container">
-                <div class="card">
-                    <h2>Events Page  <i class="fa-solid fa-calendar-days"></i></h2>
-                    <h3>**Decription Here**</h3>
+
+            <div class="card feature-card">
+                <div class="card-icon">
+                    <i class="fa-solid fa-comment"></i>
                 </div>
-                <div class="card">
-                    <h2>Socials Page  <i class="fa-solid fa-comment"></i></h2>
-                    <h3>**Decription Here**</h3>
-                </div>
-                <div class="card">
-                    <h2>Stats Page  <i class="fa-solid fa-chart-simple"></i></h2>
-                    <h3>**Decription Here**</h3>
-                </div>
+                <h2>Social Hub</h2>
+                <p>Connect with other players, find teammates, share strategies, and build your gaming community. Post LFG requests and engage with fellow students.</p>
+                <a href="" class="card-link">Join Discussion <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-        </main> 
-        {% endblock %}
-        <footer class="footer">
-            &copy; 2025 Pit Portal. All rights reserved.
-        </footer> 
-    </body>
+
+            <div class="card feature-card">
+                <div class="card-icon">
+                    <i class="fa-solid fa-chart-simple"></i>
+                </div>
+                <h2>Game Stats</h2>
+                <p>Track your performance across Valorant, Overwatch, League of Legends, and Super Smash Bros. Climb the leaderboards and showcase your skills.</p>
+                <a href="/stats" class="card-link">View Stats <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <div class="stats-banner card">
+            <div class="stat-item">
+                <i class="fa-solid fa-users"></i>
+                <div class="stat-number">{{ total_users|default:"100+" }}</div>
+                <div class="stat-label">Active Players</div>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-gamepad"></i>
+                <div class="stat-number">4</div>
+                <div class="stat-label">Supported Games</div>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-trophy"></i>
+                <div class="stat-number">{{ total_events|default:"25+" }}</div>
+                <div class="stat-label">Events Hosted</div>
+            </div>
+        </div>
+    </main>
+    {% endblock %}
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Pit Portal. All rights reserved.</p>
+            <p class="footer-subtitle">Empowering the Snake Pit gaming community</p>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
 </html>
