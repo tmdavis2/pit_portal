@@ -32,10 +32,12 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="/"><i class="fa-solid fa-house"></i> Home</a></li>
                 <li><a href="/events"><i class="fa-solid fa-calendar-days"></i> Events</a></li>
-                <li><a href=""><i class="fa-solid fa-comment"></i> Social</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href=""><i class="fa-solid fa-comment"></i> Social</a></li>
+                    <li><a href="/stats"><i class="fa-solid fa-chart-simple"></i> Stats</a></li>
+                {% endif %}
                 <li><a href="/leaderboard"><i class="fa-solid fa-trophy"></i> Leaderboard</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="/stats"><i class="fa-solid fa-chart-simple"></i> Stats</a></li>
                     <li><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
                     <li><a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
                 {% else %}
@@ -62,7 +64,7 @@
                 <p>Schedule and join gaming tournaments, community events, and competitive matches. Stay updated on what's happening at the Snake Pit.</p>
                 <a href="/events" class="card-link">Explore Events <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-
+            {% if user.is_authenticated %}
             <div class="card feature-card">
                 <div class="card-icon">
                     <i class="fa-solid fa-comment"></i>
@@ -71,14 +73,14 @@
                 <p>Connect with other players, find teammates, share strategies, and build your gaming community. Post LFG requests and engage with fellow students.</p>
                 <a href="" class="card-link">Join Discussion <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-
+            {% endif %}
             <div class="card feature-card">
                 <div class="card-icon">
                     <i class="fa-solid fa-chart-simple"></i>
                 </div>
-                <h2>Game Stats</h2>
-                <p>Track your performance across Valorant, Overwatch, League of Legends, and Super Smash Bros. Climb the leaderboards and showcase your skills.</p>
-                <a href="/stats" class="card-link">View Stats <i class="fa-solid fa-arrow-right"></i></a>
+                <h2>Game Leaderboards</h2>
+                <p>Track performances across Valorant, Overwatch, League of Legends, and Super Smash Bros. Climb the leaderboards and showcase your skills.</p>
+                <a href="/leaderboard" class="card-link">View Stats <i class="fa-solid fa-arrow-right"></i></a>
             </div>
         </div>
 
