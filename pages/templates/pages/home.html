@@ -33,7 +33,7 @@
                 <li><a href="/"><i class="fa-solid fa-house"></i> Home</a></li>
                 <li><a href="/events"><i class="fa-solid fa-calendar-days"></i> Events</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href=""><i class="fa-solid fa-comment"></i> Social</a></li>
+                    <li><a href="/social"><i class="fa-solid fa-comment"></i> Social</a></li>
                     <li><a href="/stats"><i class="fa-solid fa-chart-simple"></i> Stats</a></li>
                 {% endif %}
                 <li><a href="/leaderboard"><i class="fa-solid fa-trophy"></i> Leaderboard</a></li>
@@ -71,7 +71,7 @@
                 </div>
                 <h2>Social Hub</h2>
                 <p>Connect with other players, find teammates, share strategies, and build your gaming community. Post LFG requests and engage with fellow students.</p>
-                <a href="" class="card-link">Join Discussion <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="/social" class="card-link">Join Discussion <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             {% endif %}
             <div class="card feature-card">

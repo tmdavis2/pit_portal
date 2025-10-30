@@ -1,0 +1,103 @@
+{% extends "pages/home.html" %}
+{% block content %}
+<main>
+    <div class="card">
+        <h1><i class="fa-solid fa-comment"></i> Social Hub</h1>
+        <p class="hero-subtitle">Connect with fellow gamers</p>
+        
+        <div class="social-content">
+            <div class="social-section">
+                <h2>Join a Chat Room</h2>
+                <p>Enter a room name to join an existing chat or create a new one.</p>
+                <input id="room-name-input" type="text" placeholder="Room name" class="form-input">
+                <button id="room-name-submit" class="card-link" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #300499 0%, #6b21a8 100%); color: white; border: none; border-radius: 8px; cursor: pointer;">Enter Room</button>
+            </div>
+            
+            <div class="social-section">
+                <h2>Start a Direct Chat</h2>
+                <p>Search for a user to start a private conversation.</p>
+                <input id="user-search-input" type="text" placeholder="Search for a user..." class="form-input">
+                <ul id="user-results" style="list-style: none; padding: 0; max-height: 200px; overflow-y: auto; border: 1px solid rgba(48, 4, 153, 0.3); border-radius: 8px; background: rgba(30, 30, 30, 0.8);"></ul>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Room entry functionality
+    document.querySelector('#room-name-input').focus();
+    document.querySelector('#room-name-input').onkeyup = function(e) {
+        if (e.key === 'Enter') {
+            document.querySelector('#room-name-submit').click();
+        }
+    };
+
+    document.querySelector('#room-name-submit').onclick = function(e) {
+        var roomName = document.querySelector('#room-name-input').value;
+        if (roomName.trim()) {
+            window.location.pathname = '/social/' + roomName + '/';
+        }
+    };
+
+    // User search functionality
+    const userSearchInput = document.querySelector('#user-search-input');
+    const userResults = document.querySelector('#user-results');
+    let debounceTimer;
+
+    userSearchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+        if (query.length < 2) {
+            userResults.innerHTML = '';
+            return;
+        }
+        debounceTimer = setTimeout(() => {
+            fetch(`/social/search-users/?q=${encodeURIComponent(query)}`, {credentials: 'same-origin'})
+                .then(response => response.json())
+                .then(data => {
+                    userResults.innerHTML = '';
+                    data.users.forEach(user => {
+                        const li = document.createElement('li');
+                        li.textContent = user.username;
+                        li.style.cssText = 'cursor: pointer; padding: 10px; border-bottom: 1px solid rgba(48, 4, 153, 0.2); transition: background 0.3s ease;';
+                        li.addEventListener('click', () => {
+                            const currentUser = '{{ request.user.username }}';
+                            const roomName = `dm_${[currentUser, user.username].sort().join('_')}`;
+                            window.location.pathname = `/social/${roomName}/`;
+                        });
+                        li.addEventListener('mouseover', () => li.style.background = 'rgba(48, 4, 153, 0.1)');
+                        li.addEventListener('mouseout', () => li.style.background = 'transparent');
+                        userResults.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }, 300);
+    });
+</script>
+
+<style>
+    .social-content {
+        text-align: left;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .social-section {
+        margin-bottom: 40px;
+    }
+    
+    .social-section h2 {
+        color: #a855f7;
+        margin-bottom: 10px;
+    }
+    
+    .social-section p {
+        color: #b0b0b0;
+        margin-bottom: 20px;
+    }
+    
+    #user-results li:hover {
+        background: rgba(48, 4, 153, 0.1) !important;
+    }
+</style>
+{% endblock %}
