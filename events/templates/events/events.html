@@ -1,335 +1,391 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snakepit - Events Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: "Source Sans 3", sans-serif;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .float-animation {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .slide-in {
-            animation: slideIn 0.6s ease-out;
-        }
+{% extends "pages/home.html" %}
+{% block content %}
+<style>
+  .events-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
 
-        .gradient-border {
-            position: relative;
-            background: white;
-        }
-        
-        .gradient-border::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: inherit;
-            padding: 2px;
-            background: linear-gradient(135deg, #b22234, #1a1aff);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-        }
-    </style>
-</head>
-<body class="bg-gradient-to-br from-red-700 via-red-600 to-red-800 min-h-screen">
-    <!-- Decorative Background Elements -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-red-900 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-700 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+  .events-page .hero-card {
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
+  }
+
+  .events-page .card-container {
+    max-width: 1200px;
+    margin: 0 auto 50px auto;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 0 auto 40px auto;
+    flex-wrap: wrap;
+    max-width: 1200px;
+  }
+
+  .filter-tab {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    background: rgba(25, 25, 25, 0.8);
+    color: #e0e0e0;
+  }
+
+  .filter-tab.active {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    border-color: #a855f7;
+    color: #ffffff;
+  }
+
+  .filter-tab:hover {
+    border-color: #a855f7;
+    transform: translateY(-2px);
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 28px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .event-card {
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.4s ease;
+  }
+
+  .event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    border-color: rgba(168, 85, 247, 0.6);
+  }
+
+  .event-type-bar {
+    height: 4px;
+  }
+
+  .event-type-bar.tournament {
+    background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  }
+
+  .event-type-bar.schedule {
+    background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+  }
+
+  .event-content {
+    padding: 24px;
+    position: relative;
+  }
+
+  .status-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .status-badge.live {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+  }
+
+  .status-badge.upcoming {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.5);
+  }
+
+  .status-badge.completed {
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.5);
+  }
+
+  .type-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .type-badge.tournament {
+    background: rgba(236, 72, 153, 0.2);
+    color: #f9a8d4;
+    border: 1px solid rgba(236, 72, 153, 0.5);
+  }
+
+  .type-badge.schedule {
+    background: rgba(6, 182, 212, 0.2);
+    color: #67e8f9;
+    border: 1px solid rgba(6, 182, 212, 0.5);
+  }
+
+  .event-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-right: 80px;
+  }
+
+  .event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #b0b0b0;
+    font-size: 0.9rem;
+  }
+
+  .detail-item i {
+    color: #a855f7;
+    width: 16px;
+  }
+
+  .event-description {
+    color: #b0b0b0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .event-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .event-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-align: center;
+  }
+
+  .event-btn.primary {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+  }
+
+  .event-btn.secondary {
+    background: rgba(168, 85, 247, 0.1);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  .event-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .empty-state i {
+    font-size: 4rem;
+    color: #a855f7;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .events-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="events-page">
+  <div class="card hero-card">
+    <h1><i class="fa-solid fa-calendar-days"></i> Snake Pit Events</h1>
+    <p class="hero-subtitle">Your hub for tournaments and esports schedules</p>
+    <p class="hero-description">Navigate all upcoming tournaments, enter into events, and view the Snake Pit Esports Team game schedule</p>
+  </div>
+
+  <div class="card-container">
+    <div class="card feature-card">
+      <div class="card-icon">
+        <i class="fa-solid fa-calendar"></i>
+      </div>
+      <h2>Events Schedule</h2>
+      <p>Browse and register for upcoming tournaments and gaming events. Stay updated on what's happening at the Snake Pit.</p>
+      <a href="/events-schedule" class="card-link">View Schedule <i class="fa-solid fa-arrow-right"></i></a>
     </div>
-
-    <div class="relative max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <!-- Header Section with Enhanced Styling -->
-        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 mb-8 slide-in border-4 border-blue-600">
-            <!-- Logo/Icon Area -->
-            <div class="flex justify-center mb-6">
-                <div class="bg-gradient-to-br from-red-600 to-red-800 p-6 rounded-full shadow-lg float-animation">
-                    <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"></path>
-                    </svg>
-                </div>
-            </div>
-
-            <!-- Title -->
-            <h1 class="text-5xl sm:text-6xl font-black text-center text-gray-800 mb-4 tracking-tight">
-                <span class="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
-                    Snakepit Events
-                </span>
-            </h1>
-
-            <!-- Welcome Message -->
-            <div class="max-w-3xl mx-auto text-center mb-8">
-                <div class="bg-gradient-to-r from-blue-50 to-red-50 rounded-2xl p-6 shadow-inner border-2 border-blue-200">
-                    <p class="text-lg sm:text-xl text-gray-700 leading-relaxed">
-                        <span class="font-bold text-blue-700">Welcome to the Events Hub!</span> 
-                        <br class="hidden sm:block">
-                        <span class="text-gray-600">
-                            This is the page where you are able to navigate all upcoming tournaments, enter into events, 
-                            and view the <span class="font-semibold text-red-700">Snakepit Esports Team</span> game schedule.
-                        </span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-                <a href="/events-schedule" class="group relative w-full sm:w-auto">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-800 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-300"></div>
-                    <button class="relative w-full px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl font-bold text-lg shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span>Events Schedule</span>
-                    </button>
-                </a>
-
-                <a href="/esports-schedule" class="group relative w-full sm:w-auto">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-300"></div>
-                    <button class="relative w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold text-lg shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
-                        </svg>
-                        <span>Esports Team Schedule</span>
-                    </button>
-                </a>
-            </div>
-
-            <!-- Subtitle -->
-            <p class="text-center text-gray-500 text-lg font-semibold">
-                Stay updated with tournaments and practice schedules
-            </p>
-        </div>
-
-        <!-- Filter Tabs with Enhanced Design -->
-        <div class="flex flex-wrap justify-center gap-3 mb-8 slide-in" style="animation-delay: 0.2s;">
-            <button class="filter-tab px-6 py-3 rounded-full font-bold text-base shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white border-2 border-blue-700" onclick="filterEvents('all')">
-                🎮 All Events
-            </button>
-            <button class="filter-tab px-6 py-3 rounded-full font-bold text-base shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl bg-white text-gray-700 border-2 border-gray-300 hover:border-red-500" onclick="filterEvents('tournaments')">
-                🏆 Tournaments
-            </button>
-            <button class="filter-tab px-6 py-3 rounded-full font-bold text-base shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl bg-white text-gray-700 border-2 border-gray-300 hover:border-green-500" onclick="filterEvents('schedules')">
-                📅 Schedules
-            </button>
-            <button class="filter-tab px-6 py-3 rounded-full font-bold text-base shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl bg-white text-gray-700 border-2 border-gray-300 hover:border-red-600" onclick="filterEvents('live')">
-                🔴 Live Now
-            </button>
-        </div>
-
-        <!-- Events Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="eventsGrid">
-            <!-- Events will be populated by JavaScript -->
-        </div>
-
-        <!-- No Events Message -->
-        <div id="noEventsMessage" class="hidden text-center py-16 bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl">
-            <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-            </svg>
-            <p class="text-gray-500 text-xl font-semibold">No events found for the selected filter.</p>
-        </div>
+    <div class="card feature-card">
+      <div class="card-icon">
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <h2>Esports Team</h2>
+      <p>Check out the Snake Pit Esports Team practice and match schedule. Follow the team's competitive journey.</p>
+      <a href="/esports-schedule" class="card-link">View Team Schedule <i class="fa-solid fa-arrow-right"></i></a>
     </div>
+  </div>
 
-    <script>
-        // Sample events data
-        const eventsData = [
-        ];
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterEvents('all', this)">
+      <i class="fa-solid fa-gamepad"></i> All Events
+    </button>
+    <button class="filter-tab" onclick="filterEvents('tournament', this)">
+      <i class="fa-solid fa-trophy"></i> Tournaments
+    </button>
+    <button class="filter-tab" onclick="filterEvents('schedule', this)">
+      <i class="fa-solid fa-calendar-check"></i> Schedules
+    </button>
+    <button class="filter-tab" onclick="filterEvents('live', this)">
+      <i class="fa-solid fa-circle"></i> Live Now
+    </button>
+  </div>
 
-        let currentFilter = 'all';
+  <div class="events-grid" id="eventsGrid"></div>
 
-        function renderEvents(events) {
-            const eventsGrid = document.getElementById('eventsGrid');
-            const noEventsMessage = document.getElementById('noEventsMessage');
-            
-            if (events.length === 0) {
-                eventsGrid.innerHTML = '';
-                noEventsMessage.classList.remove('hidden');
-                return;
-            }
+  <div class="card empty-state" id="emptyState" style="display: none;">
+    <i class="fa-solid fa-calendar-xmark"></i>
+    <p>No events found for the selected filter</p>
+  </div>
+</div>
 
-            noEventsMessage.classList.add('hidden');
-            eventsGrid.innerHTML = events.map((event, index) => {
-                const typeColors = {
-                    tournament: 'from-red-500 to-orange-500',
-                    schedule: 'from-green-500 to-teal-500'
-                };
-                
-                const typeBadgeColors = {
-                    tournament: 'bg-red-100 text-red-700',
-                    schedule: 'bg-green-100 text-green-700'
-                };
-                
-                const statusColors = {
-                    live: 'bg-red-100 text-red-700 pulse-animation',
-                    upcoming: 'bg-blue-100 text-blue-700',
-                    completed: 'bg-green-100 text-green-700'
-                };
+<script>
+  const eventsData = {% if events_json %}{{ events_json|safe }}{% else %}[]{% endif %};
 
-                return `
-                    <div class="slide-in bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl border-2 border-gray-200" style="animation-delay: ${index * 0.1}s;">
-                        <!-- Gradient Top Border -->
-                        <div class="h-2 bg-gradient-to-r ${typeColors[event.type]}"></div>
-                        
-                        <div class="p-6 relative">
-                            <!-- Status Badge -->
-                            <div class="absolute top-4 right-4">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${statusColors[event.status]}">
-                                    ${event.status === 'live' ? '🔴 ' : ''}${event.status}
-                                </span>
-                            </div>
+  function renderEvents(events) {
+    const grid = document.getElementById('eventsGrid');
+    const emptyState = document.getElementById('emptyState');
 
-                            <!-- Type Badge -->
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase mb-3 ${typeBadgeColors[event.type]}">
-                                ${event.type === 'tournament' ? '🏆' : '📅'} ${event.type}
-                            </span>
+    if (!events || events.length === 0) {
+      grid.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
 
-                            <!-- Title -->
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3 pr-20">${event.title}</h3>
+    emptyState.style.display = 'none';
+    
+    grid.innerHTML = events.map(event => {
+      const statusText = event.status.charAt(0).toUpperCase() + event.status.slice(1);
+      const typeText = event.event_type.charAt(0).toUpperCase() + event.event_type.slice(1);
+      
+      return `
+        <div class="event-card">
+          <div class="event-type-bar ${event.event_type}"></div>
+          <div class="event-content">
+            <span class="status-badge ${event.status}">
+              ${event.status === 'live' ? '🔴 ' : ''}${statusText}
+            </span>
+            <span class="type-badge ${event.event_type}">
+              ${event.event_type === 'tournament' ? '🏆' : '📅'} ${typeText}
+            </span>
+            <h3 class="event-title">${event.title}</h3>
+            <div class="event-details">
+              <div class="detail-item">
+                <i class="fa-solid fa-calendar"></i>
+                <span>${event.date} at ${event.time}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>${event.game}</span>
+              </div>
+              ${event.prize_amount ? `
+                <div class="detail-item">
+                  <i class="fa-solid fa-dollar-sign"></i>
+                  <span>Prize: ${event.prize_amount}</span>
+                </div>
+              ` : ''}
+              ${event.max_participants ? `
+                <div class="detail-item">
+                  <i class="fa-solid fa-users"></i>
+                  <span>${event.current_participants}/${event.max_participants} registered</span>
+                </div>
+              ` : ''}
+              ${event.instructor ? `
+                <div class="detail-item">
+                  <i class="fa-solid fa-user"></i>
+                  <span>${event.instructor}</span>
+                </div>
+              ` : ''}
+              ${event.duration ? `
+                <div class="detail-item">
+                  <i class="fa-solid fa-clock"></i>
+                  <span>${event.duration} hours</span>
+                </div>
+              ` : ''}
+            </div>
+            <p class="event-description">${event.description}</p>
+            <div class="event-actions">
+              ${event.status === 'upcoming' ? 
+                `<button class="event-btn primary" onclick="location.href='/events/${event.id}/register'">Register Now</button>` : 
+                event.status === 'live' ? 
+                  `<button class="event-btn primary" onclick="location.href='/events/${event.id}/live'">Watch Live</button>` :
+                  `<button class="event-btn primary" onclick="location.href='/events/${event.id}/results'">View Results</button>`
+              }
+              <button class="event-btn secondary" onclick="location.href='/events/${event.id}'">More Info</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
 
-                            <!-- Details -->
-                            <div class="space-y-2 mb-4">
-                                <div class="flex items-center gap-2 text-gray-600">
-                                    <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="font-semibold">${formatDate(event.date)} at ${event.time}</span>
-                                </div>
-                                
-                                <div class="flex items-center gap-2 text-gray-600">
-                                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="font-semibold">${event.game}</span>
-                                </div>
+  function filterEvents(filter, button) {
+    // Update active tab styling
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    button.classList.add('active');
 
-                                ${event.prize ? `
-                                    <div class="flex items-center gap-2 text-gray-600">
-                                        <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span class="font-semibold text-green-600">Prize: ${event.prize}</span>
-                                    </div>
-                                ` : ''}
+    // Filter the events based on selected filter
+    let filtered = eventsData;
+    
+    if (filter === 'tournament') {
+      filtered = eventsData.filter(e => e.event_type === 'tournament');
+    } else if (filter === 'schedule') {
+      filtered = eventsData.filter(e => e.event_type === 'schedule');
+    } else if (filter === 'live') {
+      filtered = eventsData.filter(e => e.status === 'live');
+    }
+    // 'all' shows everything, so no filtering needed
 
-                                ${event.participants ? `
-                                    <div class="flex items-center gap-2 text-gray-600">
-                                        <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
-                                        </svg>
-                                        <span class="font-semibold">${event.participants}</span>
-                                    </div>
-                                ` : ''}
+    renderEvents(filtered);
+  }
 
-                                ${event.instructor ? `
-                                    <div class="flex items-center gap-2 text-gray-600">
-                                        <svg class="w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span class="font-semibold">Instructor: ${event.instructor}</span>
-                                    </div>
-                                ` : ''}
-
-                                ${event.duration ? `
-                                    <div class="flex items-center gap-2 text-gray-600">
-                                        <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        <span class="font-semibold">Duration: ${event.duration}</span>
-                                    </div>
-                                ` : ''}
-                            </div>
-
-                            <!-- Description -->
-                            <p class="text-gray-600 mb-4 line-clamp-2">${event.description}</p>
-
-                            <!-- Action Buttons -->
-                            <div class="flex gap-2 flex-wrap">
-                                ${event.status === 'upcoming' ? 
-                                    '<button class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">Register Now</button>' : 
-                                    event.status === 'live' ? 
-                                        '<button class="flex-1 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">Watch Live</button>' :
-                                        '<button class="flex-1 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200">View Results</button>'
-                                }
-                                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-bold shadow-md hover:shadow-lg hover:bg-gray-200 transform hover:scale-105 transition-all duration-200">More Info</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function filterEvents(filter) {
-            currentFilter = filter;
-            
-            // Update active tab
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('from-blue-500', 'to-blue-600', 'text-white', 'border-blue-700');
-                tab.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
-            });
-            event.target.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
-            event.target.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-blue-600', 'text-white', 'border-blue-700');
-            
-            // Filter events
-            let filteredEvents = eventsData;
-            
-            if (filter === 'tournaments') {
-                filteredEvents = eventsData.filter(event => event.type === 'tournament');
-            } else if (filter === 'schedules') {
-                filteredEvents = eventsData.filter(event => event.type === 'schedule');
-            } else if (filter === 'live') {
-                filteredEvents = eventsData.filter(event => event.status === 'live');
-            }
-            
-            renderEvents(filteredEvents);
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { 
-                weekday: 'short', 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-            });
-        }
-
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            renderEvents(eventsData);
-        });
-    </script>
-</body>
-</html>
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    renderEvents(eventsData);
+  });
+</script>
+{% endblock %}

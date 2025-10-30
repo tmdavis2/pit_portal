@@ -1,8 +1,5 @@
 from django.db import models
-
-# Create your models here.
-
-from django.contrib.auth.models import User
+from django.conf import settings  # Add this import
 from django.urls import reverse
 from django.utils import timezone
 
@@ -63,11 +60,12 @@ class Event(models.Model):
     rules = models.TextField(blank=True)
     requirements = models.TextField(blank=True)
     
-    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # CHANGE THIS LINE - use settings.AUTH_USER_MODEL instead of User
     created_by = models.ForeignKey(
-        User, 
+        settings.AUTH_USER_MODEL,  # Changed from User
         on_delete=models.SET_NULL, 
         null=True, 
         related_name='created_events'
@@ -87,19 +85,16 @@ class Event(models.Model):
         return reverse('events:detail', kwargs={'pk': self.pk})
     
     def is_full(self):
-        #Check if event is at capacity
         if self.max_participants:
             return self.current_participants >= self.max_participants
         return False
     
     def spots_remaining(self):
-        #Calculate the remaining spots
         if self.max_participants:
             return max(0, self.max_participants - self.current_participants)
         return None
     
     def is_past(self):
-        #Check if event date has passed
         return self.date < timezone.now().date()
 
 
@@ -109,8 +104,10 @@ class EventRegistration(models.Model):
         on_delete=models.CASCADE, 
         related_name='registrations'
     )
+    
+    # CHANGE THIS LINE - use settings.AUTH_USER_MODEL instead of User
     user = models.ForeignKey(
-        User, 
+        settings.AUTH_USER_MODEL,  # Changed from User
         on_delete=models.CASCADE, 
         related_name='event_registrations'
     )
@@ -129,4 +126,3 @@ class EventRegistration(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.event.title}"
-
