@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-<<<<<<< HEAD
 from pages import views as pages_views
 from accounts import views as accounts_views
 from stats import views as stats_views
@@ -26,7 +25,7 @@ from events import views as events_views
 urlpatterns = [
     path('admin', admin.site.urls),
     path("", pages_views.home_view, name="home"),
-    path("events", include("events.urls"), events_views.events_view, name="events"),
+    path("events", events_views.index, name="events"),
     path("stats", stats_views.stats_view, name="stats"),
     path("leaderboard", stats_views.leaderboard_view, name="leaderboard"),
     path("profile", stats_views.profile_view, name="profile"),
