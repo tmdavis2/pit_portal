@@ -6,8 +6,14 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import Event, EventRegistration
 
+def index(request):
+    # landing page for events
+    events = Event.objects.all().order_by('date', 'time')
+    return render(request, 'events/events.html', {'events': events})
+
+
 def event_detail(request, pk):
-    """Display detailed information about a specific event"""
+    # display details for events
     event = get_object_or_404(Event, pk=pk)
     
     # Check if user is already registered (if authenticated)
