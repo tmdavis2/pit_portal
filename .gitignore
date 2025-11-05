@@ -25,3 +25,5 @@ media/
 
 # Byte-compiled / optimized / DLL files
 *.pyc
+
+.qodo
