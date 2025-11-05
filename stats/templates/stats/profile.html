@@ -121,6 +121,19 @@
     gap: 28px;
   }
 
+  /* Force at least two cards per row on wider screens */
+  @media (min-width: 900px) {
+    .profile-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .profile-stats-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
   .game-stat-card {
     background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
