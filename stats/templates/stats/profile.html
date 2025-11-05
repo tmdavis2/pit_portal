@@ -2,119 +2,177 @@
 {% block content %}
 <style>
   .profile-page {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 60px auto;
     padding: 0 20px;
   }
 
-  .profile-header {
+  /* Hero Profile Section */
+  .profile-hero {
+    background: #171717;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    margin-bottom: 50px;
     text-align: center;
-    margin-bottom: 60px;
-    animation: slideDown 0.6s ease;
+    position: relative;
+    overflow: hidden;
   }
 
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 3rem;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+    position: relative;
+    z-index: 1;
   }
 
-  .profile-header h1 {
+  .profile-hero h1 {
     color: #ffffff;
     font-size: 2.5rem;
     margin-bottom: 8px;
-    background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+  }
+
+  .profile-hero p {
+    color: #b0b0b0;
+    font-size: 1.05rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .profile-stats-summary {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .summary-item {
+    text-align: center;
+  }
+
+  .summary-number {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, #a855f7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .profile-header p {
+  .summary-label {
     color: #b0b0b0;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* Games Grid */
+  .profile-games-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .profile-games-header h2 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .add-stats-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .add-stats-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
   }
 
   .profile-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 28px;
-    animation: fadeIn 0.8s ease;
   }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  .stat-card {
-    background: rgba(25, 25, 25, 0.8);
-    backdrop-filter: blur(10px);
+  .game-stat-card {
+    background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
-    padding: 28px;
+    padding: 0;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
   }
 
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.1), transparent);
-    transition: left 0.5s ease;
-    border-radius: 20px;
-    pointer-events: none;
-  }
 
-  .stat-card:hover::before {
-    left: 100%;
-  }
 
-  .stat-card:hover {
+  
+
+  .game-stat-card:hover {
     transform: translateY(-8px);
-    box-shadow: 
-      0 16px 48px rgba(0, 0, 0, 0.6),
-      0 0 0 1px rgba(168, 85, 247, 0.5);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
     border-color: rgba(168, 85, 247, 0.6);
   }
 
-  .stat-card h2 {
-    color: #ffffff;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    font-weight: 700;
-    position: relative;
-    z-index: 1;
+  .game-card-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
   }
 
-  .stat-card h2 i {
-    margin-right: 10px;
+  .game-card-header h3 {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .game-card-header i {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
+  .game-card-body {
+    padding: 28px;
+  }
+
   .stat-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    position: relative;
-    z-index: 1;
   }
 
   .stat-list li {
@@ -144,34 +202,56 @@
     font-size: 1.05rem;
   }
 
+  .rank-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
+  .rank-section h4 {
+    color: #a855f7;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   /* Empty State */
   .empty-state {
     text-align: center;
-    padding: 80px 40px;
-    background: rgba(25, 25, 25, 0.8);
-    backdrop-filter: blur(10px);
+    padding: 100px 40px;
+    background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
   .empty-state i {
-    font-size: 4rem;
+    font-size: 5rem;
     color: #a855f7;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     display: block;
+  }
+
+  .empty-state h3 {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
   }
 
   .empty-state p {
     color: #b0b0b0;
-    font-size: 1.1rem;
-    margin: 12px 0;
+    font-size: 1.05rem;
+    margin: 12px 0 30px;
   }
 
   .empty-state a {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 12px 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     color: #ffffff;
     text-decoration: none;
@@ -191,21 +271,27 @@
       padding: 0 16px;
     }
 
-    .profile-header h1 {
+    .profile-hero {
+      padding: 40px 24px;
+    }
+
+    .profile-hero h1 {
       font-size: 2rem;
+    }
+
+    .profile-stats-summary {
+      flex-direction: column;
+      gap: 20px;
     }
 
     .profile-stats-grid {
       grid-template-columns: 1fr;
-      gap: 20px;
     }
 
-    .stat-card {
-      padding: 24px;
-    }
-
-    .stat-card h2 {
-      font-size: 1.3rem;
+    .profile-games-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
     }
   }
 
@@ -215,22 +301,23 @@
       padding: 0 12px;
     }
 
-    .profile-header h1 {
-      font-size: 1.5rem;
+    .profile-hero {
+      padding: 30px 20px;
     }
 
-    .profile-header p {
-      font-size: 0.95rem;
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      font-size: 2.5rem;
     }
 
-    .stat-card {
+    .profile-hero h1 {
+      font-size: 1.75rem;
+    }
+
+    .game-card-header,
+    .game-card-body {
       padding: 20px;
-    }
-
-    .stat-list li {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
     }
 
     .empty-state {
@@ -238,45 +325,116 @@
     }
 
     .empty-state i {
-      font-size: 3rem;
+      font-size: 3.5rem;
     }
   }
 </style>
 
 <div class="profile-page">
-  <div class="profile-header">
-    <h1><i class="fa-solid fa-user"></i> {{ request.user.username }}'s Profile</h1>
-    <p>Your gaming statistics and performance</p>
+  <!-- Hero Profile Section -->
+  <div class="profile-hero">
+    <div class="profile-avatar">
+      <i class="fa-solid fa-user"></i>
+    </div>
+    <h1>{{ request.user.username }}</h1>
+    <p>Gaming Profile & Statistics</p>
+    
+    <div class="profile-stats-summary">
+      <div class="summary-item">
+        <div class="summary-number">{{ user_stats|length }}</div>
+        <div class="summary-label">Games Tracked</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-number">{{ total_games_played|default:"0" }}</div>
+        <div class="summary-label">Total Games</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-number">{{ overall_win_rate|default:"0" }}%</div>
+        <div class="summary-label">Overall Win Rate</div>
+      </div>
+    </div>
   </div>
 
   {% if user_stats %}
+    <!-- Games Header -->
+    <div class="profile-games-header">
+      <h2><i class="fa-solid fa-gamepad"></i> Your Games</h2>
+      <a href="/stats" class="add-stats-btn">
+        <i class="fa-solid fa-plus"></i> Add/Update Stats
+      </a>
+    </div>
+
+    <!-- Games Grid -->
     <div class="profile-stats-grid">
       {% for stat in user_stats %}
-        <div class="stat-card">
-          <h2>
-            <i class="fa-solid fa-gamepad"></i>{{ stat.game }}
-          </h2>
-          {% if stat.custom_stats %}
-            <ul class="stat-list">
-              {% for key, value in stat.custom_stats.items %}
-                <li>
-                  <strong>{{ key|capfirst }}</strong>
-                  <span class="stat-value">{{ value }}</span>
-                </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p style="color: #808080; text-align: center; padding: 20px 0;">No stats recorded yet</p>
-          {% endif %}
+        <div class="game-stat-card">
+          <div class="game-card-header">
+            <h3>
+              <i class="fa-solid fa-gamepad"></i>
+              {{ stat.game }}
+            </h3>
+          </div>
+          <div class="game-card-body">
+            {% if stat.custom_stats %}
+              <ul class="stat-list">
+                {% for key, value in stat.custom_stats.items %}
+                  {% if not key|slice:"-5:" == "_rank" %}
+                    <li>
+                      <strong>
+                        {{ key|capfirst }}
+                        {% if 'time_played' in key %}
+                          <span style="color: #808080; font-weight: normal; font-size: 0.85rem;">(hours)</span>
+                        {% endif %}
+                      </strong>
+                      <span class="stat-value">{{ value|capfirst }}</span>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+                
+                {% if stat.win_percentage %}
+                  <li>
+                    <strong>Win Percentage</strong>
+                    <span class="stat-value">{{ stat.win_percentage }}%</span>
+                  </li>
+                {% endif %}
+              </ul>
+              
+              <!-- Rocket League Mode Rankings -->
+              {% if stat.game == "Rocket League" %}
+                {% for key, value in stat.custom_stats.items %}
+                  {% if key|slice:"-5:" == "_rank" %}
+                    {% if forloop.first %}
+                      <div class="rank-section">
+                        <h4><i class="fa-solid fa-trophy"></i> Mode Rankings</h4>
+                        <ul class="stat-list">
+                    {% endif %}
+                        <li>
+                          <strong>{{ key|slice:":-5"|upper }}</strong>
+                          <span class="stat-value">{{ value|capfirst }}</span>
+                        </li>
+                    {% if forloop.last %}
+                        </ul>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% else %}
+              <p style="color: #808080; text-align: center; padding: 20px 0;">No stats recorded</p>
+            {% endif %}
+          </div>
         </div>
       {% endfor %}
     </div>
   {% else %}
+    <!-- Empty State -->
     <div class="empty-state">
       <i class="fa-solid fa-chart-line"></i>
-      <p>No stats recorded yet</p>
-      <p style="font-size: 0.95rem; color: #808080;">Start tracking your gaming performance by adding your first stats</p>
-      <a href="/stats"><i class="fa-solid fa-plus"></i> Add Stats</a>
+      <h3>No Stats Yet</h3>
+      <p>Start tracking your gaming performance by adding your first stats</p>
+      <a href="/stats">
+        <i class="fa-solid fa-plus"></i> Add Your First Stats
+      </a>
     </div>
   {% endif %}
 </div>

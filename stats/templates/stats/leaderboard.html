@@ -40,8 +40,7 @@
   }
 
   .leaderboard-card {
-    background: rgba(25, 25, 25, 0.8);
-    backdrop-filter: blur(10px);
+    background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
     padding: 30px;
@@ -181,6 +180,7 @@
     "Valorant": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"],
     "League of Legends": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grandmaster", "Challenger"],
     "Overwatch": ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Champion", "Top 500"],
+    "Rocket League": ["Unranked", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Champion", "Grand Champion", "Supersonic Legend"],
   };
 
   const chartColors = [
@@ -200,7 +200,8 @@
     let chart1Label, chart2Label, chart1Title, chart2Title;
     let chart1Data, chart2Data;
 
-    if (game === "Super Smash Bros Ultimate") {
+    // Check if this game uses time/win% or KDA/rank
+    if (game === "Super Smash Bros Ultimate" || game === "Rocket League") {
       chart1Label = "Time Played (hrs)";
       chart2Label = "Win Percentage";
       chart1Title = "Top 3 by Time Played";
@@ -216,14 +217,18 @@
       chart2Data = data.rank;
     }
 
+    // Create safe IDs for canvas elements
+    const chart1Id = `${game.replace(/\s+/g, '_')}_chart1`;
+    const chart2Id = `${game.replace(/\s+/g, '_')}_chart2`;
+
     section.innerHTML = `
       <h2 class="leaderboard-title color-${gameIndex % 4}">${game}</h2>
       <div class="chart-pair">
         <div class="chart-card">
-          <canvas id="${game.replace(/\s+/g, '_')}_chart1"></canvas>
+          <canvas id="${chart1Id}"></canvas>
         </div>
         <div class="chart-card">
-          <canvas id="${game.replace(/\s+/g, '_')}_chart2"></canvas>
+          <canvas id="${chart2Id}"></canvas>
         </div>
       </div>
     `;
@@ -232,7 +237,8 @@
     const colors = chartColors[gameIndex % chartColors.length];
     gameIndex++;
 
-    new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart1`), {
+    // Chart 1 (KDA or Time Played)
+    new Chart(document.getElementById(chart1Id), {
       type: 'bar',
       data: {
         labels: chart1Data.map(p => p.user),
@@ -246,6 +252,7 @@
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true,
         plugins: {
           title: {
             display: true,
@@ -253,7 +260,14 @@
             color: '#fff',
             font: { size: 16 }
           },
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                return `${chart1Label}: ${context.parsed.y}`;
+              }
+            }
+          }
         },
         scales: {
           x: {
@@ -269,8 +283,10 @@
       }
     });
 
-    if (game === "Super Smash Bros Ultimate") {
-      new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart2`), {
+    // Chart 2 (Rank or Win %)
+    if (game === "Super Smash Bros Ultimate" || game === "Rocket League") {
+      // Win percentage chart
+      new Chart(document.getElementById(chart2Id), {
         type: 'bar',
         data: {
           labels: chart2Data.map(p => p.user),
@@ -284,6 +300,7 @@
         },
         options: {
           responsive: true,
+          maintainAspectRatio: true,
           plugins: {
             title: {
               display: true,
@@ -291,23 +308,42 @@
               color: '#fff',
               font: { size: 16 }
             },
-            legend: { display: false }
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  return `Win %: ${context.parsed.y}%`;
+                }
+              }
+            }
           },
           scales: {
             x: { ticks: { color: '#ccc' }, grid: { color: '#333' } },
-            y: { beginAtZero: true, ticks: { color: '#ccc' }, grid: { color: '#333' } }
+            y: { 
+              beginAtZero: true, 
+              max: 100,
+              ticks: { 
+                color: '#ccc',
+                callback: (value) => `${value}%`
+              }, 
+              grid: { color: '#333' } 
+            }
           }
         }
       });
     } else {
+      // Rank chart
       const ranks = rankOrders[game] || [];
-      new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart2`), {
+      new Chart(document.getElementById(chart2Id), {
         type: 'bar',
         data: {
           labels: chart2Data.map(p => p.user),
           datasets: [{
             label: 'Rank',
-            data: chart2Data.map(p => ranks.indexOf(p.value) + 1 || 0),
+            data: chart2Data.map(p => {
+              const rankValue = p.value.charAt(0).toUpperCase() + p.value.slice(1).toLowerCase();
+              return ranks.indexOf(rankValue) + 1 || 0;
+            }),
             backgroundColor: colors.primary,
             borderColor: colors.border,
             borderWidth: 2
@@ -315,6 +351,7 @@
         },
         options: {
           responsive: true,
+          maintainAspectRatio: true,
           plugins: {
             title: {
               display: true,
@@ -324,7 +361,7 @@
             },
             tooltip: {
               callbacks: {
-                label: ctx => `${chart2Data[ctx.dataIndex].value}`
+                label: (ctx) => `Rank: ${chart2Data[ctx.dataIndex].value}`
               }
             },
             legend: { display: false }
@@ -337,7 +374,7 @@
             y: {
               ticks: {
                 color: '#ccc',
-                callback: value => ranks[value - 1] || ''
+                callback: (value) => ranks[value - 1] || ''
               },
               beginAtZero: false,
               min: 1,

@@ -2,16 +2,14 @@
 {% block content %}
 <style>
   .stats-page {
-    max-width: 900px;
+    max-width: 1400px;
     margin: 60px auto;
     padding: 0 20px;
   }
-
   .stats-header {
     text-align: center;
     margin-bottom: 50px;
   }
-
   .stats-header h1 {
     color: #ffffff;
     font-size: 2.5rem;
@@ -21,49 +19,28 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .stats-header p {
     color: #b0b0b0;
     font-size: 1.05rem;
   }
-
-  .stats-card {
-    background: rgba(25, 25, 25, 0.8);
-    backdrop-filter: blur(10px);
+  
+  .game-selector-card {
+    background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
-    padding: 40px;
+    padding: 30px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
     margin-bottom: 30px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
   }
-
-  .stats-card.game-selector-card {
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-
-  .stats-card:hover {
-    border-color: rgba(168, 85, 247, 0.5);
-  }
-
-  .stats-card h2 {
+  .game-selector-card h2 {
     color: #ffffff;
-    font-size: 1.8rem;
-    margin-bottom: 24px;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
     font-weight: 700;
   }
-
-  .stats-card.game-selector-card h2 {
-    font-size: 1.4rem;
-    margin-bottom: 16px;
-  }
-
-  /* Game Selection */
-  .game-selector {
-    margin-bottom: 24px;
-  }
-
   .game-selector label {
     display: block;
     color: #ffffff;
@@ -71,102 +48,151 @@
     margin-bottom: 12px;
     font-size: 1.05rem;
   }
-
   .game-selector select {
     width: 100%;
     padding: 14px 16px;
+    padding-right: 40px;
     border-radius: 10px;
     border: 1px solid rgba(168, 85, 247, 0.4);
-    background-color: rgba(30, 30, 30, 0.9);
+    background-color: #1e1e1e;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a855f7' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
     color: #ffffff;
     font-size: 1rem;
     font-family: "Source Sans 3", sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
   }
-
   .game-selector select:hover {
     border-color: rgba(168, 85, 247, 0.7);
-    background-color: rgba(35, 35, 35, 0.9);
+    background-color: #232323;
   }
-
   .game-selector select:focus {
     outline: none;
     border-color: #a855f7;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
   }
-
-  .game-selector select option {
-    background-color: #1e1e1e;
+  
+  .mobile-toggle {
+    display: none;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .toggle-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: #1e1e1e;
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    color: #e0e0e0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .toggle-btn.active {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    border-color: #a855f7;
     color: #ffffff;
   }
-
-  /* Form Styles */
+  
+  .split-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .stats-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+  }
+  .stats-card:hover {
+    border-color: rgba(168, 85, 247, 0.5);
+  }
+  .stats-card h2 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+  
   .form-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
   }
-
   .form-container .submit-btn {
     grid-column: 1 / -1;
   }
-
+  
   .form-group {
     display: flex;
     flex-direction: column;
     text-align: left;
   }
-
   .form-group label {
     color: #ffffff;
     font-weight: 600;
     margin-bottom: 8px;
     font-size: 0.95rem;
   }
-
   .form-group input,
   .form-group select {
     padding: 12px 14px;
+    padding-right: 40px;
     border-radius: 10px;
     border: 1px solid rgba(168, 85, 247, 0.4);
-    background-color: rgba(30, 30, 30, 0.9);
+    background-color: #1e1e1e;
     color: #ffffff;
     font-size: 1rem;
     font-family: "Source Sans 3", sans-serif;
     transition: all 0.3s ease;
   }
-
-  .form-group input::placeholder,
-  .form-group select::placeholder {
-    color: #808080;
+  .form-group input {
+    padding-right: 14px;
   }
-
+  .form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a855f7' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    appearance: none;
+    -webkit-appearance: none;
+  }
   .form-group input:hover,
   .form-group select:hover {
     border-color: rgba(168, 85, 247, 0.6);
-    background-color: rgba(35, 35, 35, 0.9);
+    background-color: #232323;
   }
-
   .form-group input:focus,
   .form-group select:focus {
     outline: none;
     border-color: #a855f7;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
-    background-color: rgba(35, 35, 35, 0.95);
   }
-
   .form-group input[type="number"] {
     -moz-appearance: textfield;
   }
-
   .form-group input[type="number"]::-webkit-outer-spin-button,
   .form-group input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-
-  /* Error Messages */
+  .form-group input[type="text"] {
+    text-transform: capitalize;
+  }
+  .field-error {
+    color: #fca5a5;
+    font-size: 0.85rem;
+    margin-top: 6px;
+  }
   .form-error {
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.5);
@@ -176,22 +202,6 @@
     margin-bottom: 20px;
     animation: slideIn 0.3s ease;
   }
-
-  .form-error p {
-    margin: 4px 0;
-    font-size: 0.95rem;
-  }
-
-  .form-error p:first-child {
-    margin-top: 0;
-  }
-
-  .field-error {
-    color: #fca5a5;
-    font-size: 0.85rem;
-    margin-top: 6px;
-  }
-
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -202,8 +212,6 @@
       transform: translateY(0);
     }
   }
-
-  /* Submit Button */
   .submit-btn {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     color: #ffffff;
@@ -218,147 +226,274 @@
     letter-spacing: 0.5px;
     margin-top: 8px;
   }
-
   .submit-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
   }
-
-  .submit-btn:active {
-    transform: translateY(0);
+  
+  .stat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
-
-  /* Empty State */
+  .stat-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.15);
+    color: #b0b0b0;
+    font-size: 0.95rem;
+  }
+  .stat-list li:last-child {
+    border-bottom: none;
+  }
+  .stat-list strong {
+    color: #ffffff;
+    font-weight: 600;
+    flex: 1;
+    text-transform: capitalize;
+  }
+  .stat-value {
+    color: #a855f7;
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  
+  /* Rocket League rank sections */
+  .rank-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+  }
+  .rank-section h3 {
+    color: #a855f7;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  
   .empty-state {
     text-align: center;
     padding: 60px 20px;
     color: #b0b0b0;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
   }
-
   .empty-state i {
     font-size: 3rem;
     color: #a855f7;
     margin-bottom: 16px;
     display: block;
   }
-
-  .empty-state p {
-    font-size: 1.1rem;
-    margin: 8px 0;
+  
+  @media (max-width: 968px) {
+    .split-container {
+      grid-template-columns: 1fr;
+    }
+    .mobile-toggle {
+      display: flex;
+    }
+    .stats-card.form-section,
+    .stats-card.profile-section {
+      display: none;
+    }
+    .stats-card.form-section.active,
+    .stats-card.profile-section.active {
+      display: block;
+    }
   }
-
   @media (max-width: 768px) {
     .stats-page {
       margin: 40px auto;
       padding: 0 16px;
     }
-
     .stats-header h1 {
       font-size: 2rem;
     }
-
     .stats-card {
       padding: 28px;
     }
-
-    .stats-card h2 {
-      font-size: 1.5rem;
+    .form-container {
+      grid-template-columns: 1fr;
     }
   }
-
   @media (max-width: 600px) {
     .stats-page {
       margin: 30px auto;
       padding: 0 12px;
     }
-
     .stats-header h1 {
       font-size: 1.5rem;
     }
-
     .stats-card {
       padding: 20px;
     }
-
-    .form-group label {
-      font-size: 0.9rem;
-    }
-
-    .form-group input,
-    .form-group select {
-      font-size: 16px;
-    }
-
-    .submit-btn {
-      padding: 12px 20px;
+    .game-selector-card {
+      padding: 20px;
     }
   }
 </style>
-
 <div class="stats-page">
   <div class="stats-header">
-    <h1><i class="fa-solid fa-chart-simple"></i> Update Your Stats</h1>
-    <p>Track your performance across your favorite games</p>
+    <h1><i class="fa-solid fa-chart-simple"></i> Your Stats</h1>
+    <p>Track and view your gaming performance</p>
   </div>
-
-  <div class="form-container">
-        <!-- Game Selection Card -->
-        <div class="stats-card">
-            <h2>Select a Game</h2>
-            <form method="GET">
-            <div class="game-selector">
-                <label for="game">Choose Game:</label>
-                <select name="game" id="game" onchange="this.form.submit()">
-                <option value="">-- Select a game --</option>
-                {% for game in games %}
-                    <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
-                {% endfor %}
-                </select>
-            </div>
-            </form>
-        </div>
-
-        <!-- Stats Entry Card -->
-        {% if form %}
-            <div class="stats-card">
-            <h2>{{ selected_game }} Stats</h2>
-
-            {% if form.non_field_errors %}
-                <div class="form-error">
-                {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-                </div>
-            {% endif %}
-
-            <form method="POST" class="form-container">
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                    <span class="field-error">{{ field.errors.0 }}</span>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                <button type="submit" class="submit-btn">
-                <i class="fa-solid fa-floppy-disk"></i> Save Stats
-                </button>
-            </form>
-            </div>
-        {% else %}
-            <div class="stats-card empty-state">
-            <i class="fa-solid fa-gamepad"></i>
-            <p>Select a game to get started</p>
-            <p style="font-size: 0.9rem; color: #808080;">Choose a game from the dropdown above to track your stats</p>
-            </div>
+  
+  <div class="game-selector-card">
+    <h2><i class="fa-solid fa-gamepad"></i> Select a Game</h2>
+    <form method="GET">
+      <div class="game-selector">
+        <label for="game">Choose Game:</label>
+        <select name="game" id="game" onchange="this.form.submit()">
+          <option value="">-- Select a game --</option>
+          {% for game in games %}
+            <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+  </div>
+  
+  {% if form %}
+    <div class="mobile-toggle">
+      <button class="toggle-btn active" onclick="toggleView('form')">
+        <i class="fa-solid fa-pen"></i> Update Stats
+      </button>
+      <button class="toggle-btn" onclick="toggleView('profile')">
+        <i class="fa-solid fa-chart-line"></i> View Stats
+      </button>
+    </div>
+    
+    <div class="split-container">
+      <div class="stats-card form-section active">
+        <h2>Update {{ selected_game }} Stats</h2>
+        {% if form.non_field_errors %}
+          <div class="form-error">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
         {% endif %}
-  </div>
+        <form method="POST" class="form-container">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group">
+              <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+                {% if 'time_played' in field.name %}
+                  <span style="color: #808080; font-weight: normal;">(hours)</span>
+                {% endif %}
+              </label>
+              {{ field }}
+              {% if field.errors %}
+                <span class="field-error">{{ field.errors.0 }}</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="submit-btn">
+            <i class="fa-solid fa-floppy-disk"></i> Save Stats
+          </button>
+        </form>
+      </div>
+      
+      <div class="stats-card profile-section">
+        <h2>Your {{ selected_game }} Stats</h2>
+        {% if current_game_stats and current_game_stats.custom_stats %}
+          <ul class="stat-list">
+            {% for key, value in current_game_stats.custom_stats.items %}
+              {% if not key|slice:"-5:" == "_rank" %}
+                <li>
+                  <strong>
+                    {{ key|capfirst }}
+                    {% if 'time_played' in key %}
+                      <span style="color: #808080; font-weight: normal; font-size: 0.85rem;">(hours)</span>
+                    {% endif %}
+                  </strong>
+                  <span class="stat-value">{{ value }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+            
+            {% if current_game_stats.win_percentage %}
+              <li>
+                <strong>Win Percentage</strong>
+                <span class="stat-value">{{ current_game_stats.win_percentage }}%</span>
+              </li>
+            {% endif %}
+          </ul>
+          
+          {% if selected_game == "Rocket League" %}
+            {% with rank_keys=current_game_stats.custom_stats.keys %}
+              {% if rank_keys %}
+                <div class="rank-section">
+                  <h3><i class="fa-solid fa-trophy"></i> Mode Rankings</h3>
+                  <ul class="stat-list">
+                    {% for key, value in current_game_stats.custom_stats.items %}
+                      {% if key|slice:"-5:" == "_rank" %}
+                        <li>
+                          <strong>{{ key|slice:":-5"|upper }}</strong>
+                          <span class="stat-value">{{ value|capfirst }}</span>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+            {% endwith %}
+          {% endif %}
+        {% else %}
+          <div class="empty-state">
+            <i class="fa-solid fa-chart-line"></i>
+            <p>No stats recorded yet</p>
+            <p style="font-size: 0.9rem; color: #808080;">Fill out the form to add your first stats</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <div class="stats-card empty-state">
+      <i class="fa-solid fa-gamepad"></i>
+      <p>Select a game to get started</p>
+      <p style="font-size: 0.9rem; color: #808080;">Choose a game from the dropdown above to track your stats</p>
+    </div>
+  {% endif %}
 </div>
-
 <script>
-  // Fade out error messages after 6 seconds
+  function toggleView(view) {
+    const formSection = document.querySelector('.form-section');
+    const profileSection = document.querySelector('.profile-section');
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    if (view === 'form') {
+      formSection.classList.add('active');
+      profileSection.classList.remove('active');
+      toggleBtns[0].classList.add('active');
+      toggleBtns[1].classList.remove('active');
+    } else {
+      formSection.classList.remove('active');
+      profileSection.classList.add('active');
+      toggleBtns[0].classList.remove('active');
+      toggleBtns[1].classList.add('active');
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const textFields = document.querySelectorAll('input[type="text"]');
+    textFields.forEach(field => {
+      if (field.name.includes('character') || field.name === 'most_played_character') {
+        field.addEventListener('input', function(e) {
+          this.value = this.value.replace(/[0-9]/g, '');
+        });
+        field.addEventListener('keypress', function(e) {
+          if (e.key >= '0' && e.key <= '9') {
+            e.preventDefault();
+          }
+        });
+      }
+    });
+  });
+  
   const errorBox = document.querySelector('.form-error');
   if (errorBox) {
     setTimeout(() => {
