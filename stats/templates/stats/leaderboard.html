@@ -6,12 +6,10 @@
     margin: 60px auto;
     padding: 0 20px;
   }
-
   .leaderboard-header {
     text-align: center;
     margin-bottom: 60px;
   }
-
   .leaderboard-header h1 {
     color: #ffffff;
     font-size: 2.5rem;
@@ -21,39 +19,91 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .leaderboard-header p {
     color: #b0b0b0;
     font-size: 1.05rem;
     line-height: 1.6;
   }
-
   .leaderboard-header b {
     color: #a855f7;
     font-weight: 600;
   }
-
+  .filter-bar {
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(30, 30, 30, 0.9);
+    border: 2px solid rgba(168, 85, 247, 0.4);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  .search-box:focus-within {
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+  }
+  .search-box i {
+    color: #a855f7;
+    font-size: 1.2rem;
+  }
+  .search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    font-family: "Source Sans 3", sans-serif;
+    outline: none;
+  }
+  .search-box input::placeholder {
+    color: #808080;
+  }
+  .clear-search {
+    background: none;
+    border: none;
+    color: #808080;
+    cursor: pointer;
+    padding: 4px;
+    display: none;
+    transition: color 0.3s ease;
+  }
+  .clear-search.active {
+    display: block;
+  }
+  .clear-search:hover {
+    color: #ffffff;
+  }
   .leaderboard-grid {
     display: flex;
     flex-direction: column;
     gap: 40px;
   }
-
   .leaderboard-card {
-    background: #1a1a1a;
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
   }
-
   .leaderboard-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
     border-color: rgba(168, 85, 247, 0.5);
   }
-
   .leaderboard-title {
     color: #ffffff;
     text-align: center;
@@ -61,42 +111,36 @@
     margin-bottom: 28px;
     font-weight: 700;
   }
-
   .leaderboard-title.color-0 {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .leaderboard-title.color-1 {
     background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .leaderboard-title.color-2 {
     background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .leaderboard-title.color-3 {
     background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .chart-pair {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 24px;
   }
-
   .chart-card {
     flex: 1 1 45%;
     background-color: #121212;
@@ -106,100 +150,106 @@
     border: 1px solid rgba(48, 4, 153, 0.2);
     transition: all 0.3s ease;
   }
-
   .chart-card:hover {
     border-color: rgba(168, 85, 247, 0.4);
   }
-
   canvas {
     width: 100% !important;
     height: 300px !important;
   }
-
   @media (max-width: 900px) {
     .chart-card {
       flex: 1 1 100%;
     }
   }
-
   @media (max-width: 768px) {
     .leaderboard-page {
       margin: 40px auto;
       padding: 0 16px;
     }
-
     .leaderboard-header h1 {
       font-size: 2rem;
     }
-
     .leaderboard-card {
       padding: 24px;
     }
-
     .leaderboard-title {
       font-size: 1.5rem;
       margin-bottom: 20px;
     }
-
     canvas {
       height: 280px !important;
     }
   }
-
   @media (max-width: 600px) {
     .leaderboard-header h1 {
       font-size: 1.5rem;
     }
-
     .leaderboard-card {
       padding: 16px;
     }
-
     canvas {
       height: 250px !important;
     }
   }
 </style>
-
 <div class="leaderboard-page">
   <div class="leaderboard-header">
     <h1><i class="fa-solid fa-trophy"></i> Leaderboards</h1>
     <p>Top 3 players by <b>KDA</b> and <b>Rank</b> per game.<br>
-       For <b>Super Smash Bros Ultimate</b>: <b>Time Played</b> and <b>Win %</b>.
+       For <b>Super Smash Bros Ultimate</b> and <b>Rocket League</b>: <b>Time Played</b> and <b>Win %</b>.
     </p>
+  </div>
+  <div class="filter-bar">
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input 
+        type="text" 
+        id="gameSearch" 
+        placeholder="Search for a game..." 
+        autocomplete="off"
+      >
+      <button class="clear-search" id="clearSearch" onclick="clearSearch()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
   </div>
   <div id="leaderboard-container" class="leaderboard-grid"></div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const leaderboards = JSON.parse('{{ leaderboards_json|escapejs }}');
   const container = document.getElementById("leaderboard-container");
-
+  const searchInput = document.getElementById("gameSearch");
+  const clearBtn = document.getElementById("clearSearch");
+  
   const rankOrders = {
     "Valorant": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"],
     "League of Legends": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grandmaster", "Challenger"],
     "Overwatch": ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Champion", "Top 500"],
     "Rocket League": ["Unranked", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Champion", "Grand Champion", "Supersonic Legend"],
   };
-
+  
   const chartColors = [
     { primary: '#a855f7', border: '#c084fc' },
     { primary: '#06b6d4', border: '#22d3ee' },
     { primary: '#ec4899', border: '#f472b6' },
     { primary: '#f59e0b', border: '#fbbf24' }
   ];
-
+  
+  // Store all game sections for filtering
+  let gameSections = [];
   let gameIndex = 0;
-
-  Object.keys(leaderboards).forEach(game => {
+  
+  Object.keys(leaderboards).forEach((game, originalIndex) => {
     const data = leaderboards[game];
     const section = document.createElement("div");
     section.classList.add("leaderboard-card");
-
+    section.setAttribute('data-game', game.toLowerCase());
+    
     let chart1Label, chart2Label, chart1Title, chart2Title;
     let chart1Data, chart2Data;
-
+    
     // Check if this game uses time/win% or KDA/rank
     if (game === "Super Smash Bros Ultimate" || game === "Rocket League") {
       chart1Label = "Time Played (hrs)";
@@ -216,11 +266,10 @@
       chart1Data = data.kda;
       chart2Data = data.rank;
     }
-
-    // Create safe IDs for canvas elements
+    
     const chart1Id = `${game.replace(/\s+/g, '_')}_chart1`;
     const chart2Id = `${game.replace(/\s+/g, '_')}_chart2`;
-
+    
     section.innerHTML = `
       <h2 class="leaderboard-title color-${gameIndex % 4}">${game}</h2>
       <div class="chart-pair">
@@ -233,11 +282,18 @@
       </div>
     `;
     container.appendChild(section);
-
+    
+    // Store section for filtering
+    gameSections.push({
+      game: game,
+      element: section,
+      originalIndex: originalIndex
+    });
+    
     const colors = chartColors[gameIndex % chartColors.length];
     gameIndex++;
-
-    // Chart 1 (KDA or Time Played)
+    
+    // Chart 1
     new Chart(document.getElementById(chart1Id), {
       type: 'bar',
       data: {
@@ -263,29 +319,19 @@
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: (context) => {
-                return `${chart1Label}: ${context.parsed.y}`;
-              }
+              label: (context) => `${chart1Label}: ${context.parsed.y}`
             }
           }
         },
         scales: {
-          x: {
-            ticks: { color: '#ccc' },
-            grid: { color: '#333' }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: { color: '#ccc' },
-            grid: { color: '#333' }
-          }
+          x: { ticks: { color: '#ccc' }, grid: { color: '#333' } },
+          y: { beginAtZero: true, ticks: { color: '#ccc' }, grid: { color: '#333' } }
         }
       }
     });
-
-    // Chart 2 (Rank or Win %)
+    
+    // Chart 2
     if (game === "Super Smash Bros Ultimate" || game === "Rocket League") {
-      // Win percentage chart
       new Chart(document.getElementById(chart2Id), {
         type: 'bar',
         data: {
@@ -302,37 +348,22 @@
           responsive: true,
           maintainAspectRatio: true,
           plugins: {
-            title: {
-              display: true,
-              text: chart2Title,
-              color: '#fff',
-              font: { size: 16 }
-            },
+            title: { display: true, text: chart2Title, color: '#fff', font: { size: 16 } },
             legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (context) => {
-                  return `Win %: ${context.parsed.y}%`;
-                }
-              }
-            }
+            tooltip: { callbacks: { label: (context) => `Win %: ${context.parsed.y}%` } }
           },
           scales: {
             x: { ticks: { color: '#ccc' }, grid: { color: '#333' } },
             y: { 
               beginAtZero: true, 
               max: 100,
-              ticks: { 
-                color: '#ccc',
-                callback: (value) => `${value}%`
-              }, 
+              ticks: { color: '#ccc', callback: (value) => `${value}%` }, 
               grid: { color: '#333' } 
             }
           }
         }
       });
     } else {
-      // Rank chart
       const ranks = rankOrders[game] || [];
       new Chart(document.getElementById(chart2Id), {
         type: 'bar',
@@ -353,29 +384,14 @@
           responsive: true,
           maintainAspectRatio: true,
           plugins: {
-            title: {
-              display: true,
-              text: chart2Title,
-              color: '#fff',
-              font: { size: 16 }
-            },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => `Rank: ${chart2Data[ctx.dataIndex].value}`
-              }
-            },
+            title: { display: true, text: chart2Title, color: '#fff', font: { size: 16 } },
+            tooltip: { callbacks: { label: (ctx) => `Rank: ${chart2Data[ctx.dataIndex].value}` } },
             legend: { display: false }
           },
           scales: {
-            x: {
-              ticks: { color: '#ccc' },
-              grid: { color: '#333' }
-            },
+            x: { ticks: { color: '#ccc' }, grid: { color: '#333' } },
             y: {
-              ticks: {
-                color: '#ccc',
-                callback: (value) => ranks[value - 1] || ''
-              },
+              ticks: { color: '#ccc', callback: (value) => ranks[value - 1] || '' },
               beginAtZero: false,
               min: 1,
               max: ranks.length,
@@ -385,6 +401,78 @@
         }
       });
     }
+  });
+  
+  // Search functionality
+  function clearSearch() {
+    searchInput.value = '';
+    clearBtn.classList.remove('active');
+    filterGames('');
+  }
+  
+  function filterGames(searchTerm) {
+    const term = searchTerm.toLowerCase().trim();
+    
+    if (term) {
+      clearBtn.classList.add('active');
+    } else {
+      clearBtn.classList.remove('active');
+    }
+    
+    if (!term) {
+      gameSections.forEach(section => {
+        section.element.style.display = 'block';
+        section.element.style.order = section.originalIndex;
+      });
+      return;
+    }
+    
+    const scored = gameSections.map(section => {
+      const gameName = section.game.toLowerCase();
+      let score = 0;
+      
+      if (gameName === term) {
+        score = 1000;
+      } else if (gameName.startsWith(term)) {
+        score = 500;
+      } else if (gameName.includes(term)) {
+        score = 100;
+      } else {
+        let lastIndex = -1;
+        let matches = 0;
+        for (let char of term) {
+          const index = gameName.indexOf(char, lastIndex + 1);
+          if (index > lastIndex) {
+            matches++;
+            lastIndex = index;
+          }
+        }
+        if (matches === term.length) {
+          score = 10;
+        }
+      }
+      
+      return { ...section, score };
+    });
+    
+    scored.sort((a, b) => b.score - a.score);
+    
+    scored.forEach((item, index) => {
+      if (item.score > 0) {
+        item.element.style.display = 'block';
+        item.element.style.order = index;
+      } else {
+        item.element.style.display = 'none';
+      }
+    });
+  }
+  
+  let searchTimeout;
+  searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      filterGames(e.target.value);
+    }, 150);
   });
 </script>
 {% endblock %}
