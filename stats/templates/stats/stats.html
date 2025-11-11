@@ -1,29 +1,48 @@
 {% extends "pages/home.html" %}
 {% block content %}
 <style>
+  /*
+    MAIN CONTAINER STYLES
+  */
+  
+  /* page level container - centers content and sets maximum width */
   .stats-page {
     max-width: 1400px;
     margin: 60px auto;
     padding: 0 20px;
   }
+
+  /*
+    HEADER SECTION
+  */
+  
+  /* Page header wrapper - centers text and adds spacing below */
   .stats-header {
     text-align: center;
     margin-bottom: 50px;
   }
+
+  /* header styling */
   .stats-header h1 {
     color: #ffffff;
     font-size: 2.5rem;
     margin-bottom: 12px;
+    /* Creates color gradient effect on text */
     background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* subtitle text styling */
   .stats-header p {
     color: #b0b0b0;
     font-size: 1.05rem;
   }
   
+  /*
+    GAME SELECTOR CARD
+  */
+  
+  /* Container for the game dropdown */
   .game-selector-card {
     background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
@@ -35,12 +54,16 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* card title styling */
   .game-selector-card h2 {
     color: #ffffff;
     font-size: 1.5rem;
     margin-bottom: 20px;
     font-weight: 700;
   }
+
+  /* Label for the game selector dropdown */
   .game-selector label {
     display: block;
     color: #ffffff;
@@ -48,13 +71,17 @@
     margin-bottom: 12px;
     font-size: 1.05rem;
   }
+
+  /* Dropdown select element with custom arrow */
   .game-selector select {
     width: 100%;
     padding: 14px 16px;
+    /* space for drop down arrow */
     padding-right: 40px;
     border-radius: 10px;
     border: 1px solid rgba(168, 85, 247, 0.4);
     background-color: #1e1e1e;
+    /* Custom SVG arrow icon for dropdown */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a855f7' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
@@ -63,24 +90,37 @@
     font-family: "Source Sans 3", sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
+    /* Remove default browser dropdown styling */
     appearance: none;
     -webkit-appearance: none;
   }
+
+  /* hover for dropdown */
   .game-selector select:hover {
     border-color: rgba(168, 85, 247, 0.7);
     background-color: #232323;
   }
+
+  /* styling for when dropdown is selected */
   .game-selector select:focus {
     outline: none;
     border-color: #a855f7;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
   }
   
+  /*
+    MOBILE VIEW BUTTONS
+  */
+  
+  /* Container for buttons */
   .mobile-toggle {
+    /* hidden until mobile view */
     display: none;
     gap: 10px;
     margin-bottom: 20px;
   }
+
+  /* toggle button styling */
   .toggle-btn {
     flex: 1;
     padding: 12px 20px;
@@ -92,12 +132,19 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
+
+  /* styling for active toggle button */
   .toggle-btn.active {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     border-color: #a855f7;
     color: #ffffff;
   }
   
+  /*
+    SPLIT VIEW LAYOUT
+  */
+  
+  /* Grid container for form and profile sections */
   .split-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -106,6 +153,8 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* single card container for form and profile sections */
   .stats-card {
     background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
@@ -114,9 +163,13 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
   }
+
+  /* hover effect */
   .stats-card:hover {
     border-color: rgba(168, 85, 247, 0.5);
   }
+
+  /* stat card titles */
   .stats-card h2 {
     color: #ffffff;
     font-size: 1.8rem;
@@ -124,29 +177,43 @@
     font-weight: 700;
   }
   
+  /*
+    FORM STYLING
+  */
+  
+  /* Grid layout for form */
   .form-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
   }
+
+  /* submit button styling */
   .form-container .submit-btn {
+    /* spans container */
     grid-column: 1 / -1;
   }
   
+  /* form field wrapper */
   .form-group {
     display: flex;
     flex-direction: column;
     text-align: left;
   }
+
+  /* Form field labels */
   .form-group label {
     color: #ffffff;
     font-weight: 600;
     margin-bottom: 8px;
     font-size: 0.95rem;
   }
+
+  /* Base styling for all input and select elements */
   .form-group input,
   .form-group select {
     padding: 12px 14px;
+    /* Space for dropdown arrow on selects */
     padding-right: 40px;
     border-radius: 10px;
     border: 1px solid rgba(168, 85, 247, 0.4);
@@ -156,43 +223,63 @@
     font-family: "Source Sans 3", sans-serif;
     transition: all 0.3s ease;
   }
+
+  /* Text inputs don't need extra right padding */
   .form-group input {
     padding-right: 14px;
   }
+
+  /* same as earlier */
+  /* Custom dropdown arrow for select elements */
   .form-group select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a855f7' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
+    /* Remove default browser dropdown arrow */
     appearance: none;
     -webkit-appearance: none;
   }
+
+  /* hover state */
   .form-group input:hover,
   .form-group select:hover {
     border-color: rgba(168, 85, 247, 0.6);
     background-color: #232323;
   }
+
+  /* selected state */
   .form-group input:focus,
   .form-group select:focus {
     outline: none;
     border-color: #a855f7;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
   }
+
+  /* Remove spinner arrows from number inputs (Firefox) */
   .form-group input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  /* Remove spinner arrows from number inputs (Chrome/Safari) */
   .form-group input[type="number"]::-webkit-outer-spin-button,
   .form-group input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
+
+  /* Auto-capitalize text inputs (for character names, etc.) */
   .form-group input[type="text"] {
     text-transform: capitalize;
   }
+
+  /* Field-level error message styling */
   .field-error {
     color: #fca5a5;
     font-size: 0.85rem;
     margin-top: 6px;
   }
+
+  /* Form-wide error message container */
   .form-error {
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.5);
@@ -202,6 +289,8 @@
     margin-bottom: 20px;
     animation: slideIn 0.3s ease;
   }
+
+  /* Animation for error message appearance */
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -212,6 +301,8 @@
       transform: translateY(0);
     }
   }
+
+  /* Form submit button with gradient background */
   .submit-btn {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     color: #ffffff;
@@ -226,16 +317,25 @@
     letter-spacing: 0.5px;
     margin-top: 8px;
   }
+
+  /* Hover effect */
   .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+    box-shadow: 0 8px 24px rgba(143, 72, 209, 0.4);
   }
   
+  /*
+    USERS STATS STYLING
+  */
+  
+  /* List container for displaying user stats */
   .stat-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
+
+  /* Individual stat row - displays stat name and value */
   .stat-list li {
     display: flex;
     justify-content: space-between;
@@ -245,27 +345,40 @@
     color: #b0b0b0;
     font-size: 0.95rem;
   }
+
+  /* Remove border from last stat item */
   .stat-list li:last-child {
     border-bottom: none;
   }
+
+  /* Stat name styling */
   .stat-list strong {
     color: #ffffff;
     font-weight: 600;
     flex: 1;
     text-transform: capitalize;
   }
+
+  /* Stat value styling */
   .stat-value {
     color: #a855f7;
     font-weight: 600;
     font-size: 1.05rem;
   }
   
-  /* Rocket League rank sections */
+  /*
+    ROCKET LEAGUE STYLING
+  */
+  
+  /* Container for rocket league section */
   .rank-section {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid rgba(168, 85, 247, 0.2);
   }
+
+  /* I STOPPED MY COMMENTS HERE FOR NOW */
+
   .rank-section h3 {
     color: #a855f7;
     font-size: 1.1rem;
