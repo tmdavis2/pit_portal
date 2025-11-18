@@ -376,9 +376,7 @@
     padding-top: 20px;
     border-top: 1px solid rgba(168, 85, 247, 0.2);
   }
-
-  /* I STOPPED MY COMMENTS HERE FOR NOW */
-
+  
   .rank-section h3 {
     color: #a855f7;
     font-size: 1.1rem;
@@ -386,6 +384,7 @@
     font-weight: 600;
   }
   
+  /* Empty state container  */
   .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -394,6 +393,8 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* Icon for the empty state */
   .empty-state i {
     font-size: 3rem;
     color: #a855f7;
@@ -401,6 +402,10 @@
     display: block;
   }
   
+  /* 
+    RESSPONSIVE DESIGN STYLING
+  */
+
   @media (max-width: 968px) {
     .split-container {
       grid-template-columns: 1fr;
@@ -417,6 +422,7 @@
       display: block;
     }
   }
+  
   @media (max-width: 768px) {
     .stats-page {
       margin: 40px auto;
@@ -432,6 +438,7 @@
       grid-template-columns: 1fr;
     }
   }
+
   @media (max-width: 600px) {
     .stats-page {
       margin: 30px auto;
@@ -448,12 +455,17 @@
     }
   }
 </style>
+
+<!-- Main container -->
 <div class="stats-page">
+
+  <!-- Header: page title and subtitle -->
   <div class="stats-header">
     <h1><i class="fa-solid fa-chart-simple"></i> Your Stats</h1>
     <p>Track and view your gaming performance</p>
   </div>
   
+  <!-- Game selector card (dropdown to choose which game's stats to view/edit) -->
   <div class="game-selector-card">
     <h2><i class="fa-solid fa-gamepad"></i> Select a Game</h2>
     <form method="GET">
@@ -469,7 +481,10 @@
     </form>
   </div>
   
+  <!-- If a game is selected, show the update form and the profile stats -->
   {% if form %}
+
+    <!-- Mobile only: toggle buttons -->
     <div class="mobile-toggle">
       <button class="toggle-btn active" onclick="toggleView('form')">
         <i class="fa-solid fa-pen"></i> Update Stats
@@ -479,7 +494,10 @@
       </button>
     </div>
     
+    <!-- Two-column container for form and stats -->
     <div class="split-container">
+
+      <!-- Left column: form -->
       <div class="stats-card form-section active">
         <h2>Update {{ selected_game }} Stats</h2>
         {% if form.non_field_errors %}
@@ -510,11 +528,16 @@
           </button>
         </form>
       </div>
-      
+
+      <!-- Right column: game stats -->
       <div class="stats-card profile-section">
         <h2>Your {{ selected_game }} Stats</h2>
+
+        <!-- show stats if they exist -->
         {% if current_game_stats and current_game_stats.custom_stats %}
           <ul class="stat-list">
+
+            <!-- going over selected games custom stats -->
             {% for key, value in current_game_stats.custom_stats.items %}
               {% if not key|slice:"-5:" == "_rank" %}
                 <li>
@@ -529,6 +552,7 @@
               {% endif %}
             {% endfor %}
             
+            <!-- finds win percentage from games/gameswon -->
             {% if current_game_stats.win_percentage %}
               <li>
                 <strong>Win Percentage</strong>
@@ -537,12 +561,15 @@
             {% endif %}
           </ul>
           
+          <!-- Rocket League: shows all the different ranks -->
           {% if selected_game == "Rocket League" %}
             {% with rank_keys=current_game_stats.custom_stats.keys %}
               {% if rank_keys %}
                 <div class="rank-section">
                   <h3><i class="fa-solid fa-trophy"></i> Mode Rankings</h3>
                   <ul class="stat-list">
+
+                    <!-- goes over ranks and format -->
                     {% for key, value in current_game_stats.custom_stats.items %}
                       {% if key|slice:"-5:" == "_rank" %}
                         <li>
@@ -551,11 +578,14 @@
                         </li>
                       {% endif %}
                     {% endfor %}
+
                   </ul>
                 </div>
               {% endif %}
             {% endwith %}
           {% endif %}
+
+        <!-- No stats yet: show empty state -->
         {% else %}
           <div class="empty-state">
             <i class="fa-solid fa-chart-line"></i>
@@ -565,6 +595,8 @@
         {% endif %}
       </div>
     </div>
+
+  <!-- No game selected: show empty state prompting selection -->
   {% else %}
     <div class="stats-card empty-state">
       <i class="fa-solid fa-gamepad"></i>
@@ -574,6 +606,8 @@
   {% endif %}
 </div>
 <script>
+
+  // logic for toggling between form and profile sections on small screens
   function toggleView(view) {
     const formSection = document.querySelector('.form-section');
     const profileSection = document.querySelector('.profile-section');
@@ -591,6 +625,7 @@
     }
   }
   
+  // On page load, prevents numeric characters in character name fields
   document.addEventListener('DOMContentLoaded', function() {
     const textFields = document.querySelectorAll('input[type="text"]');
     textFields.forEach(field => {
@@ -607,6 +642,7 @@
     });
   });
   
+  // fades and removes the error alert after a few seconds
   const errorBox = document.querySelector('.form-error');
   if (errorBox) {
     setTimeout(() => {
