@@ -1,20 +1,28 @@
 {% extends "pages/home.html" %}
+{% load tz %}
 {% block content %}
 <main>
+    
+    <!--This is the main box you see on the middle of the screen-->
     <div class="card">
-        <h1><i class="fa-solid fa-comments"></i> Chat Room: {{ room_name }}</h1>
+        <h1>
+            <i class="fa-solid fa-comments"></i>
+            Chat Room: {{room_display_name}}
+
+        </h1>
         <p class="hero-subtitle">Real-time conversation</p>
         
+        <!--This is the box within the main box that displays all of the previous messages-->
         <div class="chat-container">
             <div class="chat-messages">
-                <textarea id="chat-log" readonly placeholder="Chat messages will appear here..."></textarea>
+                <div id="chat-log" style ="width: 100%; height: 400px; padding: 16px; border-radius: 10px; border: 1px solid rgba(48, 4, 153, 1); background-color: rgba(30, 30, 30, 01); font-family: 'Source Sans 3', sans-serif; font-size: 14px; line-height: 1.5; overflow-y: auto; white-space: pre-wrap;"></div>
             </div>
             
             <div class="chat-input-section">
                 <input id="chat-message-input" type="text" placeholder="Type your message..." class="form-input">
                 <button id="chat-message-submit" class="card-link" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #300499 0%, #6b21a8 100%); color: white; border: none; border-radius: 8px; cursor: pointer; margin-left: 10px;">Send Message</button>
             </div>
-        </div>
+        </div> 
     </div>
 </main>
 
@@ -23,7 +31,7 @@
 <script>
     // Load existing messages
     {% for msg in messages %}
-        document.querySelector('#chat-log').value += '{{ msg.username }}: {{ msg.content }}\n';
+        document.querySelector('#chat-log').innerHTML += `<div><strong>{{ msg.username }}</strong>: {{ msg.content }} <span style ="color: #333333; font-size: 10px;">{{msg.timestamp|localtime|date:"M j, Y g: i A"}}</span></div>\n`;
     {% endfor %}
     
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
@@ -32,7 +40,8 @@
     
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        document.querySelector('#chat-log').value += (data.message + '\n');
+        const timestamp = new Date().toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'})
+        document.querySelector('#chat-log').innerHTML += `<div><strong>${data.username}</strong>: ${data.message} <span style = "color: #333333; font-size: 10px;">${timestamp}</span></div>`;
         // Auto-scroll to bottom
         const chatLog = document.querySelector('#chat-log');
         chatLog.scrollTop = chatLog.scrollHeight;
@@ -85,6 +94,7 @@
         font-size: 14px;
         resize: vertical;
         line-height: 1.5;
+        text-align: left;
     }
     
     #chat-log:focus {
