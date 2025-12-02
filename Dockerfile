@@ -1,39 +1,23 @@
-# syntax = docker/dockerfile:1
+FROM python:3.11-slim
 
-# Adjust NODE_VERSION as desired
-ARG NODE_VERSION=20.18.0
-FROM node:${NODE_VERSION}-slim AS base
-
-LABEL fly_launch_runtime="Node.js"
-
-# Node.js app lives here
 WORKDIR /app
 
-# Set production environment
-ENV NODE_ENV="production"
+# Install system deps if needed
+RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
 
+# Install Python deps
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-
-# Install node modules
-COPY package-lock.json package.json ./
-RUN npm ci
-
-# Copy application code
+# Copy code
 COPY . .
 
+# Run migrations and collect static
+RUN python manage.py migrate
+RUN python manage.py collectstatic --noinput
 
-# Final stage for app image
-FROM base
+# Expose port
+EXPOSE $PORT
 
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD [ "node", "index.js" ]
+# Start with Gunicorn
+CMD daphne pit_portal.wsgi:application --bind 0.0.0.0:$PORT
