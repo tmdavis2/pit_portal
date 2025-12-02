@@ -1,0 +1,139 @@
+{% extends "pages/home.html" %}
+{% load tz %}
+{% block content %}
+<main>
+    
+    <!--This is the main box you see on the middle of the screen-->
+    <div class="card">
+        <h1>
+            <i class="fa-solid fa-comments"></i>
+            Chat Room: {{room_display_name}}
+
+        </h1>
+        <p class="hero-subtitle">Real-time conversation</p>
+        
+        <!--This is the box within the main box that displays all of the previous messages-->
+        <div class="chat-container">
+            <div class="chat-messages">
+                <div id="chat-log" style ="width: 100%; height: 400px; padding: 16px; border-radius: 10px; border: 1px solid rgba(48, 4, 153, 1); background-color: rgba(30, 30, 30, 01); font-family: 'Source Sans 3', sans-serif; font-size: 14px; line-height: 1.5; overflow-y: auto; white-space: pre-wrap;"></div>
+            </div>
+            
+            <div class="chat-input-section">
+                <input id="chat-message-input" type="text" placeholder="Type your message..." class="form-input">
+                <button id="chat-message-submit" class="card-link" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #300499 0%, #6b21a8 100%); color: white; border: none; border-radius: 8px; cursor: pointer; margin-left: 10px;">Send Message</button>
+            </div>
+        </div> 
+    </div>
+</main>
+
+{{ room_name|json_script:"room-name" }}
+
+<script>
+    // Load existing messages
+    {% for msg in messages %}
+        document.querySelector('#chat-log').innerHTML += `<div><strong>{{ msg.username }}</strong>: {{ msg.content }} <span style ="color: #333333; font-size: 10px;">{{msg.timestamp|localtime|date:"M j, Y g: i A"}}</span></div>\n`;
+    {% endfor %}
+    
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    
+    const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/");
+    
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const timestamp = new Date().toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'})
+        document.querySelector('#chat-log').innerHTML += `<div><strong>${data.username}</strong>: ${data.message} <span style = "color: #333333; font-size: 10px;">${timestamp}</span></div>`;
+        // Auto-scroll to bottom
+        const chatLog = document.querySelector('#chat-log');
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+        document.querySelector('#chat-log').value += 'Connection lost. Please refresh the page.\n';
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.key === 'Enter') {
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value.trim();
+        if (message) {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'username': '{{ request.user.username }}'
+            }));
+            messageInputDom.value = '';
+        }
+    };
+</script>
+
+<style>
+    .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .chat-messages {
+        margin-bottom: 20px;
+    }
+    
+    #chat-log {
+        width: 100%;
+        height: 400px;
+        padding: 16px;
+        border-radius: 10px;
+        border: 1px solid rgba(48, 4, 153, 0.5);
+        background-color: rgba(30, 30, 30, 0.8);
+        color: #e0e0e0;
+        font-family: "Source Sans 3", sans-serif;
+        font-size: 14px;
+        resize: vertical;
+        line-height: 1.5;
+        text-align: left;
+    }
+    
+    #chat-log:focus {
+        outline: none;
+        border-color: #a855f7;
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+    }
+    
+    .chat-input-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .chat-input-section .form-input {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    
+    .chat-input-section .card-link {
+        white-space: nowrap;
+        transition: all 0.3s ease;
+    }
+    
+    .chat-input-section .card-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .chat-input-section {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .chat-input-section .card-link {
+            margin-left: 0;
+            margin-top: 10px;
+        }
+    }
+</style>
+{% endblock %}

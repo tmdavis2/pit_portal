@@ -1,19 +1,353 @@
 {% extends "pages/home.html" %}
 {% block content %}
-<main>
-    <div class="card">
-        <h1>Welcome to the Leaderboards Page!</h1>
-    </div>
-    <div class="card-container">
-        <div class="card">
+<style>
+  .leaderboard-page {
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 0 20px;
+  }
 
-        </div>
-        <div class="card">
+  .leaderboard-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
 
-        </div>
-        <div class="card">
+  .leaderboard-header h1 {
+    color: #ffffff;
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
+  .leaderboard-header p {
+    color: #b0b0b0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .leaderboard-header b {
+    color: #a855f7;
+    font-weight: 600;
+  }
+
+  .leaderboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .leaderboard-card {
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .leaderboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+    border-color: rgba(168, 85, 247, 0.5);
+  }
+
+  .leaderboard-title {
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 28px;
+    font-weight: 700;
+  }
+
+  .leaderboard-title.color-0 {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .leaderboard-title.color-1 {
+    background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .leaderboard-title.color-2 {
+    background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .leaderboard-title.color-3 {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .chart-pair {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .chart-card {
+    flex: 1 1 45%;
+    background-color: #121212;
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 320px;
+    border: 1px solid rgba(48, 4, 153, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .chart-card:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 300px !important;
+  }
+
+  @media (max-width: 900px) {
+    .chart-card {
+      flex: 1 1 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .leaderboard-page {
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    .leaderboard-header h1 {
+      font-size: 2rem;
+    }
+
+    .leaderboard-card {
+      padding: 24px;
+    }
+
+    .leaderboard-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    canvas {
+      height: 280px !important;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .leaderboard-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .leaderboard-card {
+      padding: 16px;
+    }
+
+    canvas {
+      height: 250px !important;
+    }
+  }
+</style>
+
+<div class="leaderboard-page">
+  <div class="leaderboard-header">
+    <h1><i class="fa-solid fa-trophy"></i> Leaderboards</h1>
+    <p>Top 3 players by <b>KDA</b> and <b>Rank</b> per game.<br>
+       For <b>Super Smash Bros Ultimate</b>: <b>Time Played</b> and <b>Win %</b>.
+    </p>
+  </div>
+  <div id="leaderboard-container" class="leaderboard-grid"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const leaderboards = JSON.parse('{{ leaderboards_json|escapejs }}');
+  const container = document.getElementById("leaderboard-container");
+
+  const rankOrders = {
+    "Valorant": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"],
+    "League of Legends": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grandmaster", "Challenger"],
+    "Overwatch": ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Champion", "Top 500"],
+  };
+
+  const chartColors = [
+    { primary: '#a855f7', border: '#c084fc' },
+    { primary: '#06b6d4', border: '#22d3ee' },
+    { primary: '#ec4899', border: '#f472b6' },
+    { primary: '#f59e0b', border: '#fbbf24' }
+  ];
+
+  let gameIndex = 0;
+
+  Object.keys(leaderboards).forEach(game => {
+    const data = leaderboards[game];
+    const section = document.createElement("div");
+    section.classList.add("leaderboard-card");
+
+    let chart1Label, chart2Label, chart1Title, chart2Title;
+    let chart1Data, chart2Data;
+
+    if (game === "Super Smash Bros Ultimate") {
+      chart1Label = "Time Played (hrs)";
+      chart2Label = "Win Percentage";
+      chart1Title = "Top 3 by Time Played";
+      chart2Title = "Top 3 by Win %";
+      chart1Data = data.time_played;
+      chart2Data = data.win_percentage;
+    } else {
+      chart1Label = "KDA ((Kills + Assists) / Deaths)";
+      chart2Label = "Rank";
+      chart1Title = "Top 3 by KDA";
+      chart2Title = "Top 3 by Rank";
+      chart1Data = data.kda;
+      chart2Data = data.rank;
+    }
+
+    section.innerHTML = `
+      <h2 class="leaderboard-title color-${gameIndex % 4}">${game}</h2>
+      <div class="chart-pair">
+        <div class="chart-card">
+          <canvas id="${game.replace(/\s+/g, '_')}_chart1"></canvas>
         </div>
-    </div>
-</main> 
+        <div class="chart-card">
+          <canvas id="${game.replace(/\s+/g, '_')}_chart2"></canvas>
+        </div>
+      </div>
+    `;
+    container.appendChild(section);
+
+    const colors = chartColors[gameIndex % chartColors.length];
+    gameIndex++;
+
+    new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart1`), {
+      type: 'bar',
+      data: {
+        labels: chart1Data.map(p => p.user),
+        datasets: [{
+          label: chart1Label,
+          data: chart1Data.map(p => p.value),
+          backgroundColor: colors.primary,
+          borderColor: colors.border,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: chart1Title,
+            color: '#fff',
+            font: { size: 16 }
+          },
+          legend: { display: false }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#ccc' },
+            grid: { color: '#333' }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#ccc' },
+            grid: { color: '#333' }
+          }
+        }
+      }
+    });
+
+    if (game === "Super Smash Bros Ultimate") {
+      new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart2`), {
+        type: 'bar',
+        data: {
+          labels: chart2Data.map(p => p.user),
+          datasets: [{
+            label: chart2Label,
+            data: chart2Data.map(p => p.value),
+            backgroundColor: colors.primary,
+            borderColor: colors.border,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: chart2Title,
+              color: '#fff',
+              font: { size: 16 }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            x: { ticks: { color: '#ccc' }, grid: { color: '#333' } },
+            y: { beginAtZero: true, ticks: { color: '#ccc' }, grid: { color: '#333' } }
+          }
+        }
+      });
+    } else {
+      const ranks = rankOrders[game] || [];
+      new Chart(document.getElementById(`${game.replace(/\s+/g, '_')}_chart2`), {
+        type: 'bar',
+        data: {
+          labels: chart2Data.map(p => p.user),
+          datasets: [{
+            label: 'Rank',
+            data: chart2Data.map(p => ranks.indexOf(p.value) + 1 || 0),
+            backgroundColor: colors.primary,
+            borderColor: colors.border,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: chart2Title,
+              color: '#fff',
+              font: { size: 16 }
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${chart2Data[ctx.dataIndex].value}`
+              }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#ccc' },
+              grid: { color: '#333' }
+            },
+            y: {
+              ticks: {
+                color: '#ccc',
+                callback: value => ranks[value - 1] || ''
+              },
+              beginAtZero: false,
+              min: 1,
+              max: ranks.length,
+              grid: { color: '#333' }
+            }
+          }
+        }
+      });
+    }
+  });
+</script>
 {% endblock %}

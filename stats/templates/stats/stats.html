@@ -1,70 +1,371 @@
 {% extends "pages/home.html" %}
 {% block content %}
-<main>
-    <div class="card">
-        <h1>Update Your Stats</h1>
-        <h3>Track your stats for each game you play</h3>
-    </div>
+<style>
+  .stats-page {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 20px;
+  }
 
-    <div class="card">
-        <form method="GET" style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px;">
-            <label for="game" style="font-weight: bold;">Choose Game:</label>
-            <select name="game" id="game" onchange="this.form.submit()" style="padding: 8px; border-radius: 6px;">
+  .stats-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .stats-header h1 {
+    color: #ffffff;
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stats-header p {
+    color: #b0b0b0;
+    font-size: 1.05rem;
+  }
+
+  .stats-card {
+    background: rgba(25, 25, 25, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+  }
+
+  .stats-card.game-selector-card {
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .stats-card:hover {
+    border-color: rgba(168, 85, 247, 0.5);
+  }
+
+  .stats-card h2 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+
+  .stats-card.game-selector-card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+  }
+
+  /* Game Selection */
+  .game-selector {
+    margin-bottom: 24px;
+  }
+
+  .game-selector label {
+    display: block;
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+  }
+
+  .game-selector select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    background-color: rgba(30, 30, 30, 0.9);
+    color: #ffffff;
+    font-size: 1rem;
+    font-family: "Source Sans 3", sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .game-selector select:hover {
+    border-color: rgba(168, 85, 247, 0.7);
+    background-color: rgba(35, 35, 35, 0.9);
+  }
+
+  .game-selector select:focus {
+    outline: none;
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+  }
+
+  .game-selector select option {
+    background-color: #1e1e1e;
+    color: #ffffff;
+  }
+
+  /* Form Styles */
+  .form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-container .submit-btn {
+    grid-column: 1 / -1;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .form-group label {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    background-color: rgba(30, 30, 30, 0.9);
+    color: #ffffff;
+    font-size: 1rem;
+    font-family: "Source Sans 3", sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input::placeholder,
+  .form-group select::placeholder {
+    color: #808080;
+  }
+
+  .form-group input:hover,
+  .form-group select:hover {
+    border-color: rgba(168, 85, 247, 0.6);
+    background-color: rgba(35, 35, 35, 0.9);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+    background-color: rgba(35, 35, 35, 0.95);
+  }
+
+  .form-group input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  .form-group input[type="number"]::-webkit-outer-spin-button,
+  .form-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Error Messages */
+  .form-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    animation: slideIn 0.3s ease;
+  }
+
+  .form-error p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+  }
+
+  .form-error p:first-child {
+    margin-top: 0;
+  }
+
+  .field-error {
+    color: #fca5a5;
+    font-size: 0.85rem;
+    margin-top: 6px;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Submit Button */
+  .submit-btn {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #b0b0b0;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    color: #a855f7;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .empty-state p {
+    font-size: 1.1rem;
+    margin: 8px 0;
+  }
+
+  @media (max-width: 768px) {
+    .stats-page {
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    .stats-header h1 {
+      font-size: 2rem;
+    }
+
+    .stats-card {
+      padding: 28px;
+    }
+
+    .stats-card h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .stats-page {
+      margin: 30px auto;
+      padding: 0 12px;
+    }
+
+    .stats-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .stats-card {
+      padding: 20px;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      font-size: 16px;
+    }
+
+    .submit-btn {
+      padding: 12px 20px;
+    }
+  }
+</style>
+
+<div class="stats-page">
+  <div class="stats-header">
+    <h1><i class="fa-solid fa-chart-simple"></i> Update Your Stats</h1>
+    <p>Track your performance across your favorite games</p>
+  </div>
+
+  <div class="form-container">
+        <!-- Game Selection Card -->
+        <div class="stats-card">
+            <h2>Select a Game</h2>
+            <form method="GET">
+            <div class="game-selector">
+                <label for="game">Choose Game:</label>
+                <select name="game" id="game" onchange="this.form.submit()">
                 <option value="">-- Select a game --</option>
                 {% for game in games %}
                     <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
                 {% endfor %}
-            </select>
-        </form>
+                </select>
+            </div>
+            </form>
+        </div>
 
+        <!-- Stats Entry Card -->
         {% if form %}
-            <!--Red Box appears-->
+            <div class="stats-card">
+            <h2>{{ selected_game }} Stats</h2>
+
             {% if form.non_field_errors %}
-                <div id="form-error" style="background-color: #ffdddd; color: #990000; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
-                    {% for error in form.non_field_errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+                <div class="form-error">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
                 </div>
             {% endif %}
 
-            <form method="POST" style="display: flex; flex-direction: column; gap: 16px;">
+            <form method="POST" class="form-container">
                 {% csrf_token %}
                 {% for field in form %}
-                    <div style="text-align: left;">
-                        <label for="{{ field.id_for_label }}" style="font-weight: bold; display: block; margin-bottom: 4px;">
-                            {{ field.label }}
-                        </label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <p style="color: #ff5555; font-size: 0.9rem;">{{ field.errors }}</p>
-                        {% endif %}
-                    </div>
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <span class="field-error">{{ field.errors.0 }}</span>
+                    {% endif %}
+                </div>
                 {% endfor %}
-
-                <button type="submit" style="
-                    background-color: #300499; 
-                    color: #ffffff; 
-                    padding: 8px 12px; 
-                    border-radius: 8px;
-                    font-weight: bold;
-                    cursor: pointer;
-                    margin-top: 12px;">
-                    Save Stats
+                <button type="submit" class="submit-btn">
+                <i class="fa-solid fa-floppy-disk"></i> Save Stats
                 </button>
             </form>
+            </div>
+        {% else %}
+            <div class="stats-card empty-state">
+            <i class="fa-solid fa-gamepad"></i>
+            <p>Select a game to get started</p>
+            <p style="font-size: 0.9rem; color: #808080;">Choose a game from the dropdown above to track your stats</p>
+            </div>
         {% endif %}
-    </div>
-</main>
+  </div>
+</div>
 
 <script>
-    // Fade out the alert after 5 seconds
-    const errorBox = document.getElementById('form-error');
-    if (errorBox) {
-        setTimeout(() => {
-            errorBox.style.transition = 'opacity 1s ease';
-            errorBox.style.opacity = '0';
-            setTimeout(() => errorBox.remove(), 1000);
-        }, 5000);
-    }
+  // Fade out error messages after 6 seconds
+  const errorBox = document.querySelector('.form-error');
+  if (errorBox) {
+    setTimeout(() => {
+      errorBox.style.transition = 'opacity 0.8s ease';
+      errorBox.style.opacity = '0';
+      setTimeout(() => errorBox.remove(), 800);
+    }, 6000);
+  }
 </script>
 {% endblock %}
