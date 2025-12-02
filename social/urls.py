@@ -9,4 +9,4 @@ urlpatterns = [
     path("<str:room_name>/", social_views.room, name="room"),
     
 
-]
+] 
