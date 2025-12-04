@@ -21,14 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!x82wqd@bs5&z%ehrayc5dsyp$=cq#1hv!md%3m6refaojr^hr'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-fallback-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # set false to show your 404 page
-DEBUG = True
+DEBUG = False 
 # In production, this should be replaced with a proper domain name: 'yourdomain.com'
 # otherwise: use '*' for testing
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['pit-portal.fly.dev']
 
 
 # Application definition
