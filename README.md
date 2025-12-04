@@ -91,7 +91,7 @@ For Docker deployment, build and run the container (Dockerfile assumed to be pre
 - `accounts/`: User authentication and management
 - `pages/`: Static pages and home
 - `social/`: Real-time chat functionality
-- `stats/`: Sports statistics and leaderboards
+- `stats/`:  Statistics and leaderboards
 - `events/`: Event management
 - `theme/`: Tailwind CSS configuration and static files
 
