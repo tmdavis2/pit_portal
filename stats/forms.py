@@ -28,7 +28,7 @@ class PlayerStatsForm(forms.ModelForm):
         ],
     }
     
-    # Rocket League game modes
+    # Rocket league game modes
     ROCKET_LEAGUE_MODES = [
         "1v1", "2v2", "3v3", "rumble", "snow day", "dropshot", "hoops"
     ]
@@ -37,7 +37,7 @@ class PlayerStatsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.game = game
         
-        # Add game-specific fields dynamically
+        # Add game specific fields
         if game and game in GAME_FIELDS:
             for field_name, field_type in GAME_FIELDS[game].items():
                 label = field_name.replace("_", " ").title()
@@ -101,31 +101,31 @@ class PlayerStatsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         
-        # Special validation for Rocket League
+        # Special validation for rocket league
         if self.game == "Rocket League":
             game_mode = cleaned_data.get('game_mode')
             rank = cleaned_data.get('rank')
             
-            # Both must be filled or both must be empty
+            # XOR for game mode and rank selected
             if bool(game_mode) != bool(rank):
                 raise forms.ValidationError(
                     "If you want to record a rank, you must select both a game mode and a rank."
                 )
             
-            # If both are selected, store in the format "mode_rank" (e.g., "1v1_rank")
+            # If both are selected, store in a key value pair
             if game_mode and rank:
-                # Store the rank under a specific key for this mode
+                # Store the rank under the modes key
                 rank_key = f"{game_mode}_rank"
                 cleaned_data[rank_key] = rank.lower()
-                # Remove the generic fields from cleaned_data since we're storing them differently
+                # Remove the generic fields
                 cleaned_data.pop('game_mode', None)
                 cleaned_data.pop('rank', None)
         
-        # Prevent empty submission
+        # No empty submissions
         if not any(value not in [None, ""] for value in cleaned_data.values()):
             raise forms.ValidationError("Please fill in at least one field to update stats.")
         
-        # Validate games_won doesn't exceed games_played
+        # make sure games_won doesn't exceed games_played
         games_played_key = 'games_played' if 'games_played' in cleaned_data else 'games_played_total'
         games_played = cleaned_data.get(games_played_key)
         games_won = cleaned_data.get('games_won')
@@ -136,7 +136,7 @@ class PlayerStatsForm(forms.ModelForm):
                     "Games won cannot be greater than games played."
                 )
         
-        # Validate rank field for non-Rocket League games
+        # make sure rank field
         if self.game != "Rocket League" and 'current_rank' in cleaned_data and cleaned_data['current_rank']:
             rank_value = cleaned_data['current_rank']
             allowed = self.ALLOWED_RANKS.get(self.game, [])

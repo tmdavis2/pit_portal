@@ -20,7 +20,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 await self.close()
                 return
         
-        await self.channel_layer.group_add(
+        await self.channel_layer.group_add( 
             self.room_group_name ,
             self.channel_name
         )
@@ -45,4 +45,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def sendMessage(self , event) : 
         message = event["message"]
         username = event["username"]
-        await self.send(text_data = json.dumps({"message":message ,"username":username}))
+        timestamp = event.get("timestamp", "")
+        await self.send(text_data = json.dumps({"message":message ,"username":username, "timestamp": timestamp}))

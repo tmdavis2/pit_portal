@@ -1,3 +1,6 @@
+
+# This file stores games and their game specific fields
+
 GAME_FIELDS = {
     "Valorant": {
         "games_played": "int",

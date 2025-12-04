@@ -1,15 +1,28 @@
 {% extends "pages/home.html" %}
 {% block content %}
 <style>
+
+  /*
+    MAIN CONTAINER STYLES
+  */
+
+  /* page level container - centers content and sets maximum width */
   .leaderboard-page {
     max-width: 1400px;
     margin: 60px auto;
     padding: 0 20px;
   }
+
+  /*
+    HEADER SECTION STYLES
+  */
+
+  /* Page header container */
   .leaderboard-header {
     text-align: center;
     margin-bottom: 60px;
   }
+
   .leaderboard-header h1 {
     color: #ffffff;
     font-size: 2.5rem;
@@ -19,15 +32,25 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Subtitle text under header */
   .leaderboard-header p {
     color: #b0b0b0;
     font-size: 1.05rem;
     line-height: 1.6;
   }
+
+  /* Emphasis color within subtitle */
   .leaderboard-header b {
     color: #a855f7;
     font-weight: 600;
   }
+
+  /*
+    FILTER BAR (SEARCH) STYLES
+  */
+
+  /* Search/filter container */
   .filter-bar {
     background: rgba(25, 25, 25, 0.8);
     border: 1px solid rgba(168, 85, 247, 0.3);
@@ -39,6 +62,8 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* Search input wrapper */
   .search-box {
     display: flex;
     align-items: center;
@@ -49,14 +74,20 @@
     border-radius: 12px;
     transition: all 0.3s ease;
   }
+
+  /* Focus state when input is active */
   .search-box:focus-within {
     border-color: #a855f7;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
   }
+
+  /* Magnifying glass icon */
   .search-box i {
     color: #a855f7;
     font-size: 1.2rem;
   }
+
+  /* Search text input */
   .search-box input {
     flex: 1;
     background: transparent;
@@ -66,9 +97,13 @@
     font-family: "Source Sans 3", sans-serif;
     outline: none;
   }
+
+  /* Placeholder color */
   .search-box input::placeholder {
     color: #808080;
   }
+  
+  /* Clear (X) button, hidden until there is text */
   .clear-search {
     background: none;
     border: none;
@@ -78,17 +113,29 @@
     display: none;
     transition: color 0.3s ease;
   }
+
+  /* Show clear button when active */
   .clear-search.active {
     display: block;
   }
+
+  /* Hover color for clear button */
   .clear-search:hover {
     color: #ffffff;
   }
+
+  /*
+    LEADERBOARD CARDS GRID
+  */
+
+  /* Vertical list of leaderboard cards */
   .leaderboard-grid {
     display: flex;
     flex-direction: column;
     gap: 40px;
   }
+
+  /* Individual leaderboard card */
   .leaderboard-card {
     background: rgba(25, 25, 25, 0.8);
     backdrop-filter: blur(10px);
@@ -98,11 +145,15 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
   }
+
+  /* Card hover effect */
   .leaderboard-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
     border-color: rgba(168, 85, 247, 0.5);
   }
+
+  /* Card title */
   .leaderboard-title {
     color: #ffffff;
     text-align: center;
@@ -110,6 +161,8 @@
     margin-bottom: 28px;
     font-weight: 700;
   }
+
+  /* Leaderboard Title gradient variants (on a cycle) */
   .leaderboard-title.color-0 {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     -webkit-background-clip: text;
@@ -134,12 +187,16 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* two charts per leaderboard card */
   .chart-pair {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 24px;
   }
+
+  /* Single chart container */
   .chart-card {
     flex: 1 1 45%;
     background-color: #121212;
@@ -149,18 +206,28 @@
     border: 1px solid rgba(48, 4, 153, 0.2);
     transition: all 0.3s ease;
   }
+
+  /* Chart hover effect */
   .chart-card:hover {
     border-color: rgba(168, 85, 247, 0.4);
   }
+
+  /* Force sizing for charts */
   canvas {
     width: 100% !important;
     height: 300px !important;
   }
+  
+  /* 
+    RESPONSIVE DESIGN STYLING
+  */
+
   @media (max-width: 900px) {
     .chart-card {
       flex: 1 1 100%;
     }
   }
+
   @media (max-width: 768px) {
     .leaderboard-page {
       margin: 40px auto;
@@ -180,6 +247,7 @@
       height: 280px !important;
     }
   }
+
   @media (max-width: 600px) {
     .leaderboard-header h1 {
       font-size: 1.5rem;
@@ -192,14 +260,22 @@
     }
   }
 </style>
+
+<!-- page container -->
 <div class="leaderboard-page">
+
+  <!-- Header -->
   <div class="leaderboard-header">
     <h1><i class="fa-solid fa-trophy"></i> Leaderboards</h1>
     <p>Top 3 players by <b>KDA</b> and <b>Rank</b> per game.<br>
        For <b>Super Smash Bros Ultimate</b> and <b>Rocket League</b>: <b>Time Played</b> and <b>Win %</b>.
     </p>
   </div>
+
+  <!-- Filter/Search bar -->
   <div class="filter-bar">
+
+    <!-- Search input with icon and clear button -->
     <div class="search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
       <input 
@@ -212,16 +288,24 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
+
   </div>
+
+  <!-- Container where each game's leaderboard card will be put -->
   <div id="leaderboard-container" class="leaderboard-grid"></div>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+  // leaderboards data from the backend (per game)
   const leaderboards = JSON.parse('{{ leaderboards_json|escapejs }}');
+  // DOM references
   const container = document.getElementById("leaderboard-container");
   const searchInput = document.getElementById("gameSearch");
   const clearBtn = document.getElementById("clearSearch");
   
+  // Rank orders per game
   const rankOrders = {
     "Valorant": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ascendant", "Immortal", "Radiant"],
     "League of Legends": ["Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald", "Diamond", "Master", "Grandmaster", "Challenger"],
@@ -229,6 +313,7 @@
     "Rocket League": ["Unranked", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Champion", "Grand Champion", "Supersonic Legend"],
   };
   
+  // Chart color pairs used in a loop across all cards
   const chartColors = [
     { primary: '#a855f7', border: '#c084fc' },
     { primary: '#06b6d4', border: '#22d3ee' },
@@ -240,6 +325,7 @@
   let gameSections = [];
   let gameIndex = 0;
   
+  // Build one leaderboard card per game
   Object.keys(leaderboards).forEach((game, originalIndex) => {
     const data = leaderboards[game];
     const section = document.createElement("div");
@@ -249,7 +335,7 @@
     let chart1Label, chart2Label, chart1Title, chart2Title;
     let chart1Data, chart2Data;
     
-    // Check if this game uses time/win% or KDA/rank
+    // Determine metric labels/data based on the game (time/win% vs KDA/rank)
     if (game === "Super Smash Bros Ultimate" || game === "Rocket League") {
       chart1Label = "Time Played (hrs)";
       chart2Label = "Win Percentage";
@@ -269,6 +355,7 @@
     const chart1Id = `${game.replace(/\s+/g, '_')}_chart1`;
     const chart2Id = `${game.replace(/\s+/g, '_')}_chart2`;
     
+    // put the 2 charts per game into leaderboards container
     section.innerHTML = `
       <h2 class="leaderboard-title color-${gameIndex % 4}">${game}</h2>
       <div class="chart-pair">
@@ -282,7 +369,7 @@
     `;
     container.appendChild(section);
     
-    // Store section for filtering
+    // Store section for filtering and re-ordering during search
     gameSections.push({
       game: game,
       element: section,
@@ -363,6 +450,7 @@
         }
       });
     } else {
+      // Map rank strings to numeric positions using pre-defined order
       const ranks = rankOrders[game] || [];
       new Chart(document.getElementById(chart2Id), {
         type: 'bar',
@@ -403,12 +491,14 @@
   });
   
   // Search functionality
+  // Clear input and reset filtering
   function clearSearch() {
     searchInput.value = '';
     clearBtn.classList.remove('active');
     filterGames('');
   }
   
+  // Filter and re-order game cards based on search term relevance
   function filterGames(searchTerm) {
     const term = searchTerm.toLowerCase().trim();
     
@@ -426,6 +516,7 @@
       return;
     }
     
+    // Score each game by matching quality (exact, starts-with, includes, fuzzy subsequence)
     const scored = gameSections.map(section => {
       const gameName = section.game.toLowerCase();
       let score = 0;
@@ -454,6 +545,7 @@
       return { ...section, score };
     });
     
+    // Highest score first determines visual order
     scored.sort((a, b) => b.score - a.score);
     
     scored.forEach((item, index) => {
@@ -466,6 +558,7 @@
     });
   }
   
+  // Debounce search input to avoid excessive filtering while typing
   let searchTimeout;
   searchInput.addEventListener('input', (e) => {
     clearTimeout(searchTimeout);

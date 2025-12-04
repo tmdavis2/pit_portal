@@ -1,13 +1,23 @@
 {% extends "pages/home.html" %}
 {% block content %}
 <style>
+
+  /*
+    MAIN CONTAINER STYLES
+  */
+
+  /* page level container - centers content and sets maximum width */
   .profile-page {
     max-width: 1400px;
     margin: 60px auto;
     padding: 0 20px;
   }
 
-  /* Hero Profile Section */
+  /*
+    HERO SECTION STYLES
+  */
+
+  /* Hero section container */
   .profile-hero {
     background: #171717;
     border: 1px solid rgba(168, 85, 247, 0.4);
@@ -21,6 +31,7 @@
   }
 
   
+  /* user icon styling */
   .profile-avatar {
     width: 120px;
     height: 120px;
@@ -37,6 +48,7 @@
     z-index: 1;
   }
 
+  /* Username */
   .profile-hero h1 {
     color: #ffffff;
     font-size: 2.5rem;
@@ -46,6 +58,7 @@
     z-index: 1;
   }
 
+  /* Subtitle under username */
   .profile-hero p {
     color: #b0b0b0;
     font-size: 1.05rem;
@@ -53,6 +66,7 @@
     z-index: 1;
   }
 
+  /* container for games tracked, total games, win rate */
   .profile-stats-summary {
     display: flex;
     justify-content: center;
@@ -62,10 +76,12 @@
     z-index: 1;
   }
 
+  /* one stat in the container */
   .summary-item {
     text-align: center;
   }
 
+  /* stat number styling */
   .summary-number {
     font-size: 2rem;
     font-weight: 700;
@@ -75,6 +91,7 @@
     background-clip: text;
   }
 
+  /* label under the number */
   .summary-label {
     color: #b0b0b0;
     font-size: 0.9rem;
@@ -83,7 +100,11 @@
     margin-top: 4px;
   }
 
-  /* Games Grid */
+  /*
+    GRID CONTAINER FOR GAMES UNDER HERO
+  */
+
+  /* Header above the games grid */
   .profile-games-header {
     display: flex;
     justify-content: space-between;
@@ -91,12 +112,14 @@
     margin-bottom: 30px;
   }
 
+  /* Section title text */
   .profile-games-header h2 {
     color: #ffffff;
     font-size: 1.8rem;
     font-weight: 700;
   }
 
+  /* Button to add or update stats */
   .add-stats-btn {
     padding: 10px 20px;
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
@@ -110,11 +133,13 @@
     gap: 8px;
   }
 
+  /* button hover effect */
   .add-stats-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
   }
 
+  /* Responsive grid of game cards */
   .profile-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -128,12 +153,14 @@
     }
   }
 
+  /* Three columns on very wide screens */
   @media (min-width: 1400px) {
     .profile-stats-grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
 
+  /* Individual game stat card */
   .game-stat-card {
     background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
@@ -145,22 +172,21 @@
     overflow: hidden;
   }
 
-
-
-  
-
+  /* Card hover effect */
   .game-stat-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
     border-color: rgba(168, 85, 247, 0.6);
   }
 
+  /* Card header */
   .game-card-header {
     padding: 24px 28px;
     background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, transparent 100%);
     border-bottom: 1px solid rgba(168, 85, 247, 0.2);
   }
 
+  /* Game title */
   .game-card-header h3 {
     color: #ffffff;
     font-size: 1.5rem;
@@ -171,6 +197,7 @@
     gap: 10px;
   }
 
+  /* icon inside the header in game card */
   .game-card-header i {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     -webkit-background-clip: text;
@@ -178,16 +205,19 @@
     background-clip: text;
   }
 
+  /* Card body container */
   .game-card-body {
     padding: 28px;
   }
 
+  /* Key/value stats list container */
   .stat-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
+  /* Single stat row (name on left, value on right) */
   .stat-list li {
     display: flex;
     justify-content: space-between;
@@ -198,10 +228,12 @@
     font-size: 0.95rem;
   }
 
+  /* Remove divider from last stat row */
   .stat-list li:last-child {
     border-bottom: none;
   }
 
+  /* Stat name */
   .stat-list strong {
     color: #ffffff;
     font-weight: 600;
@@ -209,18 +241,21 @@
     text-transform: capitalize;
   }
 
+  /* Stat value */
   .stat-value {
     color: #a855f7;
     font-weight: 600;
     font-size: 1.05rem;
   }
 
+  /* Rocket League ranks section separator */
   .rank-section {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid rgba(168, 85, 247, 0.2);
   }
 
+  /* Ranks section heading */
   .rank-section h4 {
     color: #a855f7;
     font-size: 1rem;
@@ -231,7 +266,7 @@
     gap: 8px;
   }
 
-  /* Empty State */
+  /* Empty State: shown when the user has no recorded stats */
   .empty-state {
     text-align: center;
     padding: 100px 40px;
@@ -241,6 +276,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
+  /* icon in the empty state */
   .empty-state i {
     font-size: 5rem;
     color: #a855f7;
@@ -248,18 +284,21 @@
     display: block;
   }
 
+  /* Empty state title */
   .empty-state h3 {
     color: #ffffff;
     font-size: 1.5rem;
     margin-bottom: 12px;
   }
 
+  /* Empty state description text */
   .empty-state p {
     color: #b0b0b0;
     font-size: 1.05rem;
     margin: 12px 0 30px;
   }
 
+  /* button in empty state */
   .empty-state a {
     display: inline-flex;
     align-items: center;
@@ -273,10 +312,15 @@
     transition: all 0.3s ease;
   }
 
+  /* link hover effect */
   .empty-state a:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
   }
+
+  /*
+    RESPONSIVE DESIGN STYLING
+  */
 
   @media (max-width: 768px) {
     .profile-page {
@@ -343,15 +387,24 @@
   }
 </style>
 
+<!-- page container -->
 <div class="profile-page">
-  <!-- Hero Profile Section -->
+
+  <!-- Hero section: icon, username, and summary metrics -->
   <div class="profile-hero">
+
+    <!-- user icon -->
     <div class="profile-avatar">
       <i class="fa-solid fa-user"></i>
     </div>
+
+    <!-- Username -->
     <h1>{{ request.user.username }}</h1>
+
+    <!-- Subtitle -->
     <p>Gaming Profile & Statistics</p>
     
+    <!-- games tracked, total games, overall win rate in the hero-->
     <div class="profile-stats-summary">
       <div class="summary-item">
         <div class="summary-number">{{ user_stats|length }}</div>
@@ -368,8 +421,10 @@
     </div>
   </div>
 
+  <!-- If there is saved stats, show game cards -->
   {% if user_stats %}
-    <!-- Games Header -->
+
+    <!-- Header above the games grid with button to add/update stats -->
     <div class="profile-games-header">
       <h2><i class="fa-solid fa-gamepad"></i> Your Games</h2>
       <a href="/stats" class="add-stats-btn">
@@ -377,8 +432,9 @@
       </a>
     </div>
 
-    <!-- Games Grid -->
+    <!-- Responsive grid of the users game stat cards -->
     <div class="profile-stats-grid">
+
       {% for stat in user_stats %}
         <div class="game-stat-card">
           <div class="game-card-header">
@@ -404,6 +460,7 @@
                   {% endif %}
                 {% endfor %}
                 
+                <!-- if win perecentage can be calulated -->
                 {% if stat.win_percentage %}
                   <li>
                     <strong>Win Percentage</strong>
@@ -433,14 +490,17 @@
                 {% endfor %}
               {% endif %}
             {% else %}
+
+              <!-- This game has no recorded stats yet -->
               <p style="color: #808080; text-align: center; padding: 20px 0;">No stats recorded</p>
             {% endif %}
           </div>
         </div>
       {% endfor %}
     </div>
+
+  <!-- Empty State: no stats yet, prompt to add the first stats -->
   {% else %}
-    <!-- Empty State -->
     <div class="empty-state">
       <i class="fa-solid fa-chart-line"></i>
       <h3>No Stats Yet</h3>

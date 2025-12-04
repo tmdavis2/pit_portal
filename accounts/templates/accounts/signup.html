@@ -1,57 +1,62 @@
 {% extends "pages/home.html" %}
 {% block content %}
 <style>
-  .auth-page {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 60px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+
+  /*
+    LAYOUT CONTAINER
+  */
+
+  .auth-container {
+    width: 100%;
   }
+  
+  /*
+    AUTH CARD
+  */
 
   .auth-card {
-    width: 100%;
+    max-width: 500px;
+    margin: 2rem auto;
     background: #1a1a1a;
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
-    padding: 40px;
+    padding: 30px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
-
+  
   .auth-card h1 {
     color: #ffffff;
     font-size: 2rem;
-    margin-bottom: 8px;
     text-align: center;
     background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
+  
   .auth-card p {
     text-align: center;
     color: #b0b0b0;
     font-size: 0.95rem;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
   }
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
+  /*
+    FORM FIELD STYLES
+  */
 
-  .form-group label {
+  .auth-form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .auth-form-group label {
+    display: block;
     color: #ffffff;
     font-weight: 600;
     margin-bottom: 8px;
     font-size: 0.95rem;
   }
-
-  .form-group input {
+  
+  .auth-form-group input {
+    width: 100%;
     padding: 12px 14px;
     border-radius: 10px;
     border: 1px solid rgba(168, 85, 247, 0.4);
@@ -60,40 +65,47 @@
     font-size: 1rem;
     font-family: "Source Sans 3", sans-serif;
     transition: all 0.3s ease;
+    box-sizing: border-box;
   }
-
-  .form-group input::placeholder {
+  
+  .auth-form-group input::placeholder {
     color: #808080;
   }
-
-  .form-group input:hover {
+  
+  .auth-form-group input:hover {
     border-color: rgba(168, 85, 247, 0.6);
     background-color: #232323;
   }
-
-  .form-group input:focus {
+  
+  .auth-form-group input:focus {
     outline: none;
     border-color: #a855f7;
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
     background-color: #252525;
   }
-
+  
+  /* help / error text under fields */
   .field-help-text {
     color: #808080;
     font-size: 0.85rem;
     margin-top: 6px;
     line-height: 1.4;
+    display: block;
   }
-
+  
   .field-error {
     color: #fca5a5;
     font-size: 0.85rem;
     margin-top: 6px;
   }
-
+  
   .field-error li {
     margin: 4px 0 4px 20px;
   }
+  
+  /*
+    BUTTONS
+  */
 
   .auth-buttons {
     display: flex;
@@ -101,8 +113,9 @@
     gap: 12px;
     margin-top: 28px;
   }
-
-  .btn-signup {
+  
+  .btn-auth-signup {
+    width: 100%;
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     color: #ffffff;
     padding: 13px 24px;
@@ -115,17 +128,18 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-
-  .btn-signup:hover {
+  
+  .btn-auth-signup:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
   }
-
-  .btn-signup:active {
+  
+  .btn-auth-signup:active {
     transform: translateY(0);
   }
-
-  .btn-login {
+  
+  .btn-auth-login {
+    width: 100%;
     background: transparent;
     color: #ffffff;
     padding: 13px 24px;
@@ -140,79 +154,101 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     display: block;
+    box-sizing: border-box;
   }
-
-  .btn-login:hover {
+  
+  .btn-auth-login:hover {
     border-color: #a855f7;
     background-color: rgba(168, 85, 247, 0.1);
     transform: translateY(-2px);
   }
+  
+  /*
+    DIVIDERS
+  */
 
-  .divider {
-    margin: 20px 0;
+  .auth-divider {
+    margin: 1.5rem 0;
     border: none;
     border-top: 1px solid rgba(168, 85, 247, 0.2);
   }
+  
+  /*
+    RESPONSIVE DESIGN STYLING
+  */
 
   @media (max-width: 600px) {
-    .auth-page {
-      margin: 40px auto;
+    .auth-container {
+      padding: 1rem 0.5rem;
     }
-
+    
     .auth-card {
-      padding: 28px;
+      margin: 1rem auto;
+      padding: 30px 20px;
     }
-
+    
     .auth-card h1 {
       font-size: 1.5rem;
     }
-
-    .form-group input {
+    
+    .auth-form-group input {
       font-size: 16px;
     }
   }
 </style>
 
-<div class="auth-page">
+<!-- page container -->
+<div class="auth-container">
+
+  <!-- card wrapper -->
   <div class="auth-card">
+
+    <!-- Title and subtitle -->
     <h1><i class="fa-solid fa-user-plus"></i> Create Account</h1>
     <p>Join Pit Portal and start tracking your stats</p>
 
+    <!-- Signup form -->
     <form method="post">
       {% csrf_token %}
       
+      <!-- Render each field with label, input, errors, and help text -->
       {% for field in form %}
-        <div class="form-group">
+        <div class="auth-form-group">
           {{ field.label_tag }}
           {{ field }}
           
           {% if field.errors %}
+            <!-- Field-level errors -->
             <div class="field-error">
               {% for error in field.errors %}
                 {{ error }}
               {% endfor %}
             </div>
           {% endif %}
-
+          
           {% if field.help_text %}
+            <!-- Optional help text under field -->
             <div class="field-help-text">
               {{ field.help_text|safe }}
             </div>
           {% endif %}
         </div>
       {% endfor %}
-
+      
+      <!-- Primary submit button -->
       <div class="auth-buttons">
-        <button type="submit" class="btn-signup">
+        <button type="submit" class="btn-auth-signup">
           <i class="fa-solid fa-check"></i> Sign Up
         </button>
       </div>
     </form>
-
-    <hr class="divider">
-
+    
+    <!-- Divider between sign-up and login action -->
+    <hr class="auth-divider">
+    
+    <!-- link to login page -->
     <div class="auth-buttons">
-      <a href="/login" class="btn-login">
+      <a href="/login" class="btn-auth-login">
         <i class="fa-solid fa-sign-in-alt"></i> Already Have An Account?
       </a>
     </div>
