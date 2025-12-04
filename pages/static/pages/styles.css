@@ -209,17 +209,6 @@ h2 {
     font-size: 0.9rem;
 }
 
-.login-btn, .logout-btn {
-    background: linear-gradient(135deg, #300499 0%, #6b21a8 100%);
-    color: #ffffff !important;
-    font-weight: 600;
-}
-
-.login-btn:hover, .logout-btn:hover {
-    background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-}
-
 /* ============================================
    MAIN CONTENT
    ============================================ */
@@ -522,6 +511,7 @@ canvas {
     .card-container {
         grid-template-columns: 1fr;
     }
+    
 }
 
 @media (max-width: 600px) {
