@@ -1,0 +1,181 @@
+{% extends "pages/home.html" %}
+{% block content %}
+
+<style>
+.create-event-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.form-subtitle {
+    color: #b0b0b0;
+    font-size: 1.1rem;
+}
+
+.event-form {
+    background: #1a1a1a;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: #2a2a2a;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}
+
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+.pending-notice {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 30px;
+    color: #93c5fd;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="create-event-page">
+    <div class="form-header">
+        <h1 class="form-title">✨ Create New Event</h1>
+        <p class="form-subtitle">Submit your event for approval</p>
+    </div>
+
+    <form method="POST" class="event-form">
+        {% csrf_token %}
+        
+        <div class="pending-notice">
+            ℹ️ Your event will be reviewed by admins before appearing on the schedule
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Event Title *</label>
+            <input type="text" name="title" class="form-input" required placeholder="e.g., Spring Championship Tournament">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Event Type *</label>
+                <select name="event_type" class="form-select" required>
+                    <option value="tournament">Tournament</option>
+                    <option value="schedule">Schedule</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Game *</label>
+                <input type="text" name="game" class="form-input" required placeholder="e.g., League of Legends">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea name="description" class="form-textarea" required placeholder="Describe your event..."></textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Date *</label>
+                <input type="date" name="date" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Time *</label>
+                <input type="time" name="time" class="form-input" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" name="location" class="form-input" placeholder="e.g., Main Arena">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Max Participants</label>
+                <input type="number" name="max_participants" class="form-input" placeholder="e.g., 50">
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Event for Approval</button>
+    </form>
+</div>
+
+{% endblock %}

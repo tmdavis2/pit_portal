@@ -145,3 +145,33 @@ def dashboard(request):
         'events': events,
     }
     return render(request, 'events/dashboard.html', context)
+# Schedule page view
+def schedule_view(request):
+    """Display calendar view of all upcoming events"""
+    events = Event.objects.filter(status='upcoming').order_by('date', 'time')
+    return render(request, 'events/schedule.html', {'events': events})
+
+
+# Create event view
+def create_event_view(request):
+    """Allow users to submit events for approval"""
+    if request.method == 'POST':
+        # Get form data
+        event = Event.objects.create(
+            title=request.POST['title'],
+            description=request.POST['description'],
+            event_type=request.POST['event_type'],
+            game=request.POST['game'],
+            date=request.POST['date'],
+            time=request.POST['time'],
+            location=request.POST.get('location', ''),
+            max_participants=request.POST.get('max_participants') or None,
+            status='pending',  # Needs approval!
+            created_by=request.user if request.user.is_authenticated else None
+        )
+        
+        from django.contrib import messages
+        messages.success(request, f'Event "{event.title}" submitted! Awaiting admin approval.')
+        return redirect('events:schedule')
+    
+    return render(request, 'events/create_event.html')

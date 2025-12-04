@@ -13,6 +13,7 @@ class Event(models.Model):
         ('upcoming', 'Upcoming'),
         ('live', 'Live'),
         ('completed', 'Completed'),
+        ('pending', 'Pending Approval'),
     ]
     
     # Basic Information

@@ -23,9 +23,9 @@ from social import views as social_views
 from events import views as events_views
 
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     path("", pages_views.home_view, name="home"),
-    path("events/", events_views.index, name="events"),
+    path("events/", include('events.urls')),
     path("stats", stats_views.stats_view, name="stats"),
     path("leaderboard", stats_views.leaderboard_view, name="leaderboard"),
     path("profile", stats_views.profile_view, name="profile"),
