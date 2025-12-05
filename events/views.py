@@ -102,23 +102,14 @@ def register_event(request, pk):
         event=event,
         user=request.user
     )
-    
+ 
+ 
     # Update participant count
-
-    # Create registration
-    if request.method == 'POST':
-        registration = EventRegistration.objects.create(
-            event=event,
-            user=request.user,
-            registration_date=timezone.now()
-        )
+    event.current_participants += 1
+    event.save()
         
-        # Update participant count
-        event.current_participants += 1
-        event.save()
-        
-        messages.success(request, f'Successfully registered for {event.title}!')
-        return redirect('events:detail', pk=pk)
+    messages.success(request, f'Successfully registered for {event.title}!')
+    return redirect('events:detail', pk=pk)
     
     return redirect('events:detail', pk=pk)
 
