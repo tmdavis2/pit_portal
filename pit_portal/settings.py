@@ -25,10 +25,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-fallback-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # set false to show your 404 page
-DEBUG = False 
+DEBUG = True
 # In production, this should be replaced with a proper domain name: 'yourdomain.com'
 # otherwise: use '*' for testing
-ALLOWED_HOSTS = ['pit-portal.fly.dev']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
