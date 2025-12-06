@@ -1,4 +1,5 @@
 {% extends "pages/home.html" %}
+{% load static %}
 {% block content %}
 <style>
   .events-page {
@@ -245,7 +246,7 @@
       </div>
       <h2>Events Schedule</h2>
       <p>Browse and register for upcoming tournaments and gaming events. Stay updated on what's happening at the Snake Pit.</p>
-      <a href="/events-schedule" class="card-link">View Schedule <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="{% url 'events:schedule' %}" class="card-link">View Schedule <i class="fa-solid fa-arrow-right"></i></a>
     </div>
     <div class="card feature-card">
       <div class="card-icon">
@@ -347,7 +348,7 @@
             <p class="event-description">${event.description}</p>
             <div class="event-actions">
               ${event.status === 'upcoming' ? 
-                `<button class="event-btn primary" onclick="location.href='/events/${event.id}/register'">Register Now</button>` : 
+                `<form method="POST" action="/events/${event.id}/register/" style="margin: 0; flex: 1;"><input type="hidden" name="csrfmiddlewaretoken" value="${window.CSRF_TOKEN}"><button type="submit" class="event-btn primary" style="width: 100%;">Register Now</button></form>` :
                 event.status === 'live' ? 
                   `<button class="event-btn primary" onclick="location.href='/events/${event.id}/live'">Watch Live</button>` :
                   `<button class="event-btn primary" onclick="location.href='/events/${event.id}/results'">View Results</button>`
@@ -387,4 +388,8 @@
     renderEvents(eventsData);
   });
 </script>
+<script>
+  // Make CSRF token available to JavaScript
+  window.CSRF_TOKEN = '{{ csrf_token }}';
+  </script>
 {% endblock %}

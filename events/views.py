@@ -7,15 +7,40 @@ from django.db.models import Q
 from .models import Event, EventRegistration
 
 def index(request):
-    # landing page for events
+    """landing page for events"""
+    import json
+    from django.core.serializers.json import DjangoJSONEncoder
+    
     events = Event.objects.all().order_by('date', 'time')
-    return render(request, 'events/events.html', {'events': events})
-
+    
+    # Serialize events to JSON for JavaScript
+    events_list = []
+    for event in events:
+        events_list.append({
+            'id': event.id,
+            'title': event.title,
+            'description': event.description,
+            'event_type': event.event_type,
+            'game': event.game,
+            'date': event.date.strftime('%Y-%m-%d'),
+            'time': event.time.strftime('%H:%M'),
+            'location': event.location,
+            'status': event.status,
+            'max_participants': event.max_participants,
+            'current_participants': event.current_participants,
+            'prize_amount': str(event.prize_amount) if event.prize_amount else None,
+            'instructor': event.instructor,
+            'duration': float(event.duration) if event.duration else None,
+        })
+    
+    events_json = json.dumps(events_list, cls=DjangoJSONEncoder)
+    
+    return render(request, 'events/events.html', {'events': events, 'events_json': events_json})
 
 def event_detail(request, pk):
     # display details for events
     event = get_object_or_404(Event, pk=pk)
-    
+
     # Check if user is already registered (if authenticated)
     is_registered = False
     if request.user.is_authenticated:
@@ -24,6 +49,7 @@ def event_detail(request, pk):
             user=request.user
         ).exists()
     
+
     # Get related events (same game or type)
     related_events = Event.objects.filter(
         Q(game=event.game) | Q(event_type=event.event_type)
@@ -39,8 +65,8 @@ def event_detail(request, pk):
         'is_registered': is_registered,
         'related_events': related_events,
         'spots_remaining': spots_remaining,
-        'can_register': event.status == 'upcoming' and (
-            not event.max_participants or spots_remaining > 0
+        'can_register': event.status == 'upcoming' and not is_registered and (
+        not event.max_participants or spots_remaining > 0
         ),
     }
     
@@ -51,6 +77,10 @@ def event_detail(request, pk):
 def register_event(request, pk):
     """Handle event registration"""
     event = get_object_or_404(Event, pk=pk)
+
+    # If not POST, redirect to event detail
+    if request.method != 'POST':
+        return redirect('events:detail', pk=pk)
     
     # Check if event is available for registration
     if event.status != 'upcoming':
@@ -68,19 +98,18 @@ def register_event(request, pk):
         return redirect('events:detail', pk=pk)
     
     # Create registration
-    if request.method == 'POST':
-        registration = EventRegistration.objects.create(
-            event=event,
-            user=request.user,
-            registration_date=timezone.now()
-        )
+    EventRegistration.objects.create(
+        event=event,
+        user=request.user
+    )
+ 
+ 
+    # Update participant count
+    event.current_participants += 1
+    event.save()
         
-        # Update participant count
-        event.current_participants += 1
-        event.save()
-        
-        messages.success(request, f'Successfully registered for {event.title}!')
-        return redirect('events:detail', pk=pk)
+    messages.success(request, f'Successfully registered for {event.title}!')
+    return redirect('events:detail', pk=pk)
     
     return redirect('events:detail', pk=pk)
 
