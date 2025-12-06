@@ -75,15 +75,15 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 
 1. **Start the development server**:
    ```bash
-   daphne pit_portal.asgi:application
+   daphne pit_portal.asgi:application -p 8001
    ```
 
 2. **Access the application**:
-   Open your browser and go to `http://127.0.0.1:8000`
+   Open your browser and go to `http://127.0.0.1:8001`
 
 ## Development
 
-- **Static files**: The project uses CSS. To compile styles:
+- **Static files**: The project uses CSS. 
 
 - **Database**: Uses SQLite by default. For production, configure PostgreSQL or another database in `settings.py`.
 
