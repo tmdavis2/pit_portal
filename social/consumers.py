@@ -1,10 +1,10 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.contrib.auth.models import AnonymousUser
-from .models import Message
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        from django.contrib.auth.models import AnonymousUser
+
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'chat_{self.room_name}'
 
@@ -31,6 +31,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name 
         )
     async def receive(self, text_data):
+        from .models import Message
+
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         username = text_data_json["username"]

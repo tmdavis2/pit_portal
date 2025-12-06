@@ -8,21 +8,22 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
+import django
 from django.core.asgi import get_asgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pit_portal.settings')
+django.setup()
 
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter , URLRouter
-from social import routing
 
 application = ProtocolTypeRouter(
     {
-        "http" : get_asgi_application() , 
+        "http" : get_asgi_application() ,
         "websocket" : AuthMiddlewareStack(
             URLRouter(
-                routing.websocket_urlpatterns
-            )    
+                __import__('social.routing').routing.websocket_urlpatterns
+            )
         )
     }
 )

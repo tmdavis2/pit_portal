@@ -25,10 +25,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-fallback-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # set false to show your 404 page
-DEBUG = False 
+DEBUG = True
 # In production, this should be replaced with a proper domain name: 'yourdomain.com'
 # otherwise: use '*' for testing
-ALLOWED_HOSTS = ['pit-portal.fly.dev']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -59,6 +59,7 @@ NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"  # Adjust path as needed
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -145,11 +146,18 @@ LOGIN_URL = '/login/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
+
+
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }

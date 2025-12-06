@@ -35,14 +35,21 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
    ```
 
 2. **Set up the environment**:
-   Run the provided setup script:
+   Create a virtual environment and activate it (commands vary by platform):
+   - **Windows**:
+     ```bash
+     python -m venv .venv
+     source .venv/Scripts/activate
+     ```
+   - **macOS/Linux**:
+     ```bash
+     python -m venv .venv
+     source .venv/bin/activate
+     ```
+   Install Python dependencies:
    ```bash
-   setup_env.bat
+   pip install django django-tailwind daphne channels channels-redis Pillow whitenoise
    ```
-   This will:
-   - Create a virtual environment
-   - Install Python dependencies (Django, Django Tailwind, Daphne, Channels)
-   - Start a Redis container
 
 3. **Install additional dependencies** (if needed):
    ```bash
