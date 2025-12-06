@@ -89,9 +89,7 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 
 ## Deployment
 
-The application is configured for deployment locally using Docker
-
-For Docker deployment, build and run the container (Dockerfile assumed to be present).
+The application is configured for deployment locally 
 
 ## Project Structure
 
