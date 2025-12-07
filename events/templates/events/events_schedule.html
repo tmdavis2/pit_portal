@@ -3,9 +3,10 @@
 
 <style>
 .schedule-page {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 60px 20px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 40px 20px;
 }
 
 .schedule-header {
@@ -37,12 +38,10 @@
     box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
 }
 
-.calendar-grid {
+.calendar-grid-events {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 28px;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 .event-card {
@@ -50,100 +49,88 @@
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     transition: all 0.4s ease;
 }
+.event-card:hover { transform: translateY(-6px); }
 
-.event-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 48px rgba(168, 85, 247, 0.6);
-    border-color: rgba(168, 85, 247, 0.6);
+
+.card {
+   background: rgba(26, 26, 26, 0.8);
+   border: 1px solid rgba(168, 85, 247, 0.3);
+   border-radius: 20px;
+   padding: 40px;
 }
 
-.event-type-bar {
-    height: 4px;
+.hero-card { max-width: 1000px; margin: 0 auto 40px; text-align: center; }
+
+.hero-card h1 {
+   font-size: 3rem;
+   background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
 }
 
-.event-type-bar.tournament {
-    background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+.calendar-controls {
+   max-width: 1200px;
+   margin: 40px auto;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   flex-wrap: wrap;
 }
 
-.event-type-bar.schedule {
-    background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+.calendar-grid {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
 }
 
-.event-content {
-    padding: 24px;
+.day-header {
+   text-align: center;
+   padding: 15px;
+   font-weight: 700;
+   color: #a855f7;
 }
 
-.event-date {
-    color: #a855f7;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 12px;
+.day-cell {
+   background: #1a1a1a;
+   border: 1px solid rgba(168, 85, 247, 0.2);
+   border-radius: 12px;
+   min-height: 120px;
 }
 
-.event-title {
-    color: #ffffff;
-    font-size: 1.5rem;
+.day-cell {
+    aspect-ratio: 1;
+}
+
+.current-month {
+    display: block;
+    text-align: center;
+    font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 16px;
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
 }
 
-.event-details {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.detail-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #b0b0b0;
-    font-size: 0.9rem;
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.status-badge.upcoming {
-    background: rgba(59, 130, 246, 0.2);
-    color: #93c5fd;
-    border: 1px solid rgba(59, 130, 246, 0.5);
-}
-
-.status-badge.live {
-    background: rgba(239, 68, 68, 0.2);
-    color: #fca5a5;
-    border: 1px solid rgba(239, 68, 68, 0.5);
-}
-
-@media (max-width: 768px) {
-    .calendar-grid {
-        grid-template-columns: 1fr;
-    }
-}
 </style>
+
 
 <div class="schedule-page">
     <div class="schedule-header">
         <h1 class="schedule-title">📅 Events Schedule</h1>
-        <p style="color: #b0b0b0; font-size: 1.1rem;">All upcoming tournaments and gaming events</p>
-        <a href="{% url 'events:create_event' %}" class="create-event-btn">+ Create New Event</a>
+        <p style="color: #b0b0b0; font-size: 1.1rem;">Upcoming tournaments and gaming events</p>
+        <a href="{% url 'events:create_event' %}" class="create-event-btn">+ Create Event</a>
     </div>
 
-    <div class="calendar-grid">
+    <!-- Event Cards -->
+    <div class="calendar-grid-events">
         {% for event in events %}
         <div class="event-card">
-            <div class="event-type-bar {{event.event_type}}"></div>
             <div class="event-content">
                 <div class="event-date">📆 {{event.date}} at {{event.time}}</div>
                 <h3 class="event-title">{{event.title}}</h3>
@@ -152,17 +139,90 @@
                     {% if event.location %}
                     <div class="detail-item">📍 {{event.location}}</div>
                     {% endif %}
-                    {% if event.max_participants %}
-                    <div class="detail-item">👥 {{event.current_participants}}/{{event.max_participants}} registered</div>
-                    {% endif %}
                 </div>
                 <span class="status-badge {{event.status}}">{{event.status}}</span>
             </div>
         </div>
         {% empty %}
-        <p style="color: #b0b0b0; text-align: center; padding: 80px 40px;">No events scheduled yet. Be the first to create one!</p>
+        <p>No events scheduled yet!</p>
         {% endfor %}
     </div>
 </div>
+
+
+
+<div class="schedule-page">
+    <div class="card hero-card">
+        <h1><i class="fa-solid fa-calendar"></i> Calendar View</h1>
+        <p class="hero-subtitle">View upcoming events by month</p>
+    </div>
+
+    <div class="calendar-controls">
+        <span class="current-month" id="currentMonth">December 2025</span>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div id="calendarView" class="calendar-grid">
+        <div class="day-header">SUN</div>
+        <div class="day-header">MON</div>
+        <div class="day-header">TUE</div>
+        <div class="day-header">WED</div>
+        <div class="day-header">THU</div>
+        <div class="day-header">FRI</div>
+        <div class="day-header">SAT</div>
+    </div>
+</div>
+
+
+{{ events_json|json_script:"events-data" }}
+
+<script>
+const events = JSON.parse(
+    document.getElementById("events-data").textContent
+);
+
+
+document.addEventListener('DOMContentLoaded', function() {
+   generateCalendar();
+});
+
+function generateCalendar() {
+   const grid = document.getElementById('calendarView');
+   const today = new Date().getDate();
+  
+   const daysInMonth = 31;
+   const firstDayOfMonth = 1;
+  
+   for (let i = 0; i < firstDayOfMonth; i++) {
+     const emptyCell = document.createElement('div');
+     emptyCell.className = 'day-cell other-month';
+     grid.appendChild(emptyCell);
+   }
+
+   for (let i = 1; i <= daysInMonth; i++) {
+     const dayCell = document.createElement('div');
+     dayCell.className = 'day-cell';
+
+     const number = document.createElement('div');
+     number.className = 'day-number';
+     number.textContent = i;
+     dayCell.appendChild(number);
+
+     // Add event dots
+     const todaysEvents = events.filter(e => e.date === i);
+     if (todaysEvents.length) {
+        const dots = document.createElement('div');
+        todaysEvents.forEach(event => {
+            const dot = document.createElement('span');
+            dot.className = `event-dot ${event.type}`;
+            dots.appendChild(dot);
+        });
+        dayCell.appendChild(dots);
+     }
+
+     grid.appendChild(dayCell);
+   }
+}
+</script>
 
 {% endblock %}
