@@ -1,0 +1,168 @@
+{% extends "pages/home.html" %}
+{% block content %}
+
+<style>
+.schedule-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.schedule-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.schedule-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.create-event-btn {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.create-event-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 28px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.event-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.4s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(168, 85, 247, 0.6);
+    border-color: rgba(168, 85, 247, 0.6);
+}
+
+.event-type-bar {
+    height: 4px;
+}
+
+.event-type-bar.tournament {
+    background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+}
+
+.event-type-bar.schedule {
+    background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+}
+
+.event-content {
+    padding: 24px;
+}
+
+.event-date {
+    color: #a855f7;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.event-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #b0b0b0;
+    font-size: 0.9rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-badge.upcoming {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.5);
+}
+
+.status-badge.live {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+@media (max-width: 768px) {
+    .calendar-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="schedule-page">
+    <div class="schedule-header">
+        <h1 class="schedule-title">📅 Events Schedule</h1>
+        <p style="color: #b0b0b0; font-size: 1.1rem;">All upcoming tournaments and gaming events</p>
+        <a href="{% url 'events:create_event' %}" class="create-event-btn">+ Create New Event</a>
+    </div>
+
+    <div class="calendar-grid">
+        {% for event in events %}
+        <div class="event-card">
+            <div class="event-type-bar {{event.event_type}}"></div>
+            <div class="event-content">
+                <div class="event-date">📆 {{event.date}} at {{event.time}}</div>
+                <h3 class="event-title">{{event.title}}</h3>
+                <div class="event-details">
+                    <div class="detail-item">🎮 {{event.game}}</div>
+                    {% if event.location %}
+                    <div class="detail-item">📍 {{event.location}}</div>
+                    {% endif %}
+                    {% if event.max_participants %}
+                    <div class="detail-item">👥 {{event.current_participants}}/{{event.max_participants}} registered</div>
+                    {% endif %}
+                </div>
+                <span class="status-badge {{event.status}}">{{event.status}}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p style="color: #b0b0b0; text-align: center; padding: 80px 40px;">No events scheduled yet. Be the first to create one!</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
