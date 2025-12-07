@@ -174,12 +174,17 @@ def dashboard(request):
         'events': events,
     }
     return render(request, 'events/dashboard.html', context)
-# Schedule page view
+# Events schedule page view
 def schedule_view(request):
     """Display calendar view of all upcoming events"""
     events = Event.objects.filter(status='upcoming').order_by('date', 'time')
     return render(request, 'events/events_schedule.html', {'events': events})
 
+# Esports Team schedule page view
+def esports_schedule_view(request):
+    """Display calendar view of all upcoming events"""
+    events = Event.objects.filter(status='upcoming').order_by('date', 'time')
+    return render(request, 'events/esports_schedule.html', {'events': events})
 
 # Create event view
 def create_event_view(request):
