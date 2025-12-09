@@ -7,10 +7,13 @@ class Event(models.Model):
     EVENT_TYPES = [
         ('tournament', 'Tournament'),
         ('schedule', 'Schedule'),
+        ('match', 'Match'),
+        ('practice', 'Practice')
     ]
     
     STATUS_CHOICES = [
         ('upcoming', 'Upcoming'),
+        ('approved', 'Approved'),
         ('live', 'Live'),
         ('completed', 'Completed'),
         ('pending', 'Pending Approval'),
@@ -19,7 +22,7 @@ class Event(models.Model):
     # Basic Information
     title = models.CharField(max_length=200)
     description = models.TextField()
-    event_type = models.CharField(max_length=20, choices=EVENT_TYPES)
+    event_type = models.CharField(max_length=30, choices=EVENT_TYPES)
     game = models.CharField(max_length=100)
     
     # Date and Time

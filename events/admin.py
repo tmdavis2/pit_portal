@@ -14,10 +14,17 @@ class EventAdmin(admin.ModelAdmin):
         self.message_user(request, f'{updated} event(s) approved!')
     approve_events.short_description = "✅ Approve selected events"
     
+    #def reject_events(self, request, queryset):
+     #   """Reject selected events"""
+      #  updated = queryset.update(status='completed')
+       # self.message_user(request, f'{updated} event(s) rejected!')
+    #reject_events.short_description = "❌ Reject selected events"
+
     def reject_events(self, request, queryset):
         """Reject selected events"""
-        updated = queryset.update(status='completed')
-        self.message_user(request, f'{updated} event(s) rejected!')
+        count = queryset.count()
+        queryset.delete()
+        self.message_user(request, f'{count} event(s) rejected and deleted!')
     reject_events.short_description = "❌ Reject selected events"
 
 @admin.register(EventRegistration)

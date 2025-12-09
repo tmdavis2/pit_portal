@@ -141,6 +141,41 @@
     margin-bottom: 20px;
 }
 
+.day-number {
+    padding: 8px;
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+.event-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 2px;
+}
+
+.event-dot.Tournament {
+    background-color: #a855f7;
+}
+
+.event-dot.Schedule {
+    background-color: #3b82f6;
+}
+
+.event-dot.Match {
+    background-color: #10b981;
+}
+
+.event-dot.Practice {
+    background-color: #f59e0b;
+}
+
+.other-month {
+    opacity: 0.3;
+}
+
 </style>
 
 
@@ -210,66 +245,58 @@
 {{ events_json|json_script:"events-data" }}
 
 <script>
-const esportsEvents = JSON.parse(
-    document.getElementById("esports-events-data").textContent
+const events = JSON.parse(
+    document.getElementById("events-data").textContent
 );
 
+console.log("Events loaded:", events); // Debug line
+
 document.addEventListener('DOMContentLoaded', function() {
-    generateCalendar('esportsCalendar', esportsEvents);
+   generateCalendar();
 });
 
+function generateCalendar() {
+   const grid = document.getElementById('calendarView');
+   
+   // December 2025 starts on a Monday (day 1)
+   const firstDayOfMonth = 1; // 0=Sunday, 1=Monday, etc.
+   const daysInMonth = 31;
+  
+   // Add empty cells for days before the 1st
+   for (let i = 0; i < firstDayOfMonth; i++) {
+     const emptyCell = document.createElement('div');
+     emptyCell.className = 'day-cell other-month';
+     grid.appendChild(emptyCell);
+   }
 
-function generateCalendar(calendarId, events) {
-    const grid = document.getElementById(calendarId);
-    const today = new Date();
-    
-    const year = today.getFullYear();
-    const month = today.getMonth(); // 0 = January, 11 = December
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // last day of month
-    const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 = Sunday, 1 = Monday, etc.
-    
-    // Clear the calendar first
-    grid.innerHTML = `
-        <div class="day-header">SUN</div>
-        <div class="day-header">MON</div>
-        <div class="day-header">TUE</div>
-        <div class="day-header">WED</div>
-        <div class="day-header">THU</div>
-        <div class="day-header">FRI</div>
-        <div class="day-header">SAT</div>
-    `;
+   // Add all days of the month
+   for (let i = 1; i <= daysInMonth; i++) {
+     const dayCell = document.createElement('div');
+     dayCell.className = 'day-cell';
 
-    // Add empty cells for days before the first
-    for (let i = 0; i < firstDayOfMonth; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.className = 'day-cell other-month';
-        grid.appendChild(emptyCell);
-    }
+     const number = document.createElement('div');
+     number.className = 'day-number';
+     number.textContent = i;
+     dayCell.appendChild(number);
 
-    // Add days of the month
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dayCell = document.createElement('div');
-        dayCell.className = 'day-cell';
+     // Add event dots
+     const todaysEvents = events.filter(e => e.date === i);
+     if (todaysEvents.length) {
+        const dotsContainer = document.createElement('div');
+        dotsContainer.style.textAlign = 'center';
+        dotsContainer.style.marginTop = '8px';
+        
+        todaysEvents.forEach(event => {
+            const dot = document.createElement('span');
+            dot.className = `event-dot ${event.type}`;
+            dot.title = event.title; // Shows event title on hover
+            dotsContainer.appendChild(dot);
+        });
+        dayCell.appendChild(dotsContainer);
+     }
 
-        const number = document.createElement('div');
-        number.className = 'day-number';
-        number.textContent = i;
-        dayCell.appendChild(number);
-
-        // Add event dots
-        const todaysEvents = events.filter(e => e.date === i);
-        if (todaysEvents.length) {
-            const dots = document.createElement('div');
-            todaysEvents.forEach(event => {
-                const dot = document.createElement('span');
-                dot.className = `event-dot ${event.type}`;
-                dots.appendChild(dot);
-            });
-            dayCell.appendChild(dots);
-        }
-
-        grid.appendChild(dayCell);
-    }
+     grid.appendChild(dayCell);
+   }
 }
 
 </script>

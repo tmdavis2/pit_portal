@@ -170,16 +170,23 @@ def event_results(request, pk):
 
 def dashboard(request):
     """Display events dashboard"""
-    events = Event.objects.all().order_by('date', 'time')
+    events = Event.objects.filter(
+        status='approved',
+        event_type__in=['tournament', 'schedule']
+    ).order_by('date', 'time')
     
     context = {
         'events': events,
     }
     return render(request, 'events/dashboard.html', context)
+
 # Events schedule page view
 def schedule_view(request):
     """Display calendar view of all approved events"""
-    events = Event.objects.filter(status='approved').order_by('date', 'time')
+    events = Event.objects.filter(
+        status='approved',
+        event_type__in=['tournament', 'schedule']
+    ).order_by('date', 'time')
 
     events_json = [
         {
@@ -196,7 +203,11 @@ def schedule_view(request):
 # Esports Team schedule page view
 def esports_schedule_view(request):
     """Display calendar view of all upcoming events"""
-    events = Event.objects.filter(status='approved').order_by('date', 'time')
+    events = Event.objects.filter(
+        status='approved',
+        event_type__in=['practice', 'match']
+    ).order_by('date', 'time')
+
     return render(request, 'events/esports_schedule.html', {'events': events})
 
 # Create event view
