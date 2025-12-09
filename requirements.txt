@@ -4,3 +4,4 @@ gunicorn
 channels  # For WebSockets/ASGI support, if using the social app
 daphne  # ASGI server alternative to gunicorn for Channels
 Pillow
+whitenoise
