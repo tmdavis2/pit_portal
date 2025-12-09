@@ -30,6 +30,8 @@ DEBUG = True
 # otherwise: use '*' for testing
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'pit-portal.fly.dev']
 
+CSRF_TRUSTED_ORIGINS = ['https://pit-portal.fly.dev']
+
 
 # Application definition
 
