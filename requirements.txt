@@ -3,5 +3,5 @@ django-tailwind
 gunicorn
 channels  # For WebSockets/ASGI support, if using the social app
 daphne  # ASGI server alternative to gunicorn for Channels
+whitenoise  # For serving static files in production
 Pillow
-whitenoise
