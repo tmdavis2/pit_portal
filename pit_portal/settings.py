@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-fallback-key')
 DEBUG = True
 # In production, this should be replaced with a proper domain name: 'yourdomain.com'
 # otherwise: use '*' for testing
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'pit-portal.fly.dev']
 
 
 # Application definition
