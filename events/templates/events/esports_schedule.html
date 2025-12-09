@@ -232,65 +232,59 @@
     </div>
 </div>
 
-<script id="esports-events-data" type="application/json">
-[
-  { "date": 3, "type": "practice" },
-  { "date": 7, "type": "tournament" },
-  { "date": 12, "type": "practice" },
-  { "date": 18, "type": "tournament" }
-]
-</script>
-
-
 {{ events_json|json_script:"events-data" }}
 
 <script>
-const events = JSON.parse(
-    document.getElementById("events-data").textContent
-);
-
-console.log("Events loaded:", events); // Debug line
+const eventsData = document.getElementById("events-data");
+const events = eventsData ? JSON.parse(eventsData.textContent) : [];
 
 document.addEventListener('DOMContentLoaded', function() {
-   generateCalendar();
+   generateEsportsCalendar();
 });
 
-function generateCalendar() {
-   const grid = document.getElementById('calendarView');
-   
-   // December 2025 starts on a Monday (day 1)
-   const firstDayOfMonth = 1; // 0=Sunday, 1=Monday, etc.
+function generateEsportsCalendar() {
+   const grid = document.getElementById('esportsCalendar');
+   const firstDayOfMonth = 1;
    const daysInMonth = 31;
   
-   // Add empty cells for days before the 1st
+   // Add empty cells before month starts
    for (let i = 0; i < firstDayOfMonth; i++) {
      const emptyCell = document.createElement('div');
      emptyCell.className = 'day-cell other-month';
      grid.appendChild(emptyCell);
    }
 
-   // Add all days of the month
-   for (let i = 1; i <= daysInMonth; i++) {
+   // Add each day
+   for (let day = 1; day <= daysInMonth; day++) {
      const dayCell = document.createElement('div');
      dayCell.className = 'day-cell';
 
      const number = document.createElement('div');
      number.className = 'day-number';
-     number.textContent = i;
+     number.textContent = day;
      dayCell.appendChild(number);
 
-     // Add event dots
-     const todaysEvents = events.filter(e => e.date === i);
-     if (todaysEvents.length) {
+     // Find events for this day
+     const todaysEvents = events.filter(e => e.date === day);
+     
+     if (todaysEvents.length > 0) {
         const dotsContainer = document.createElement('div');
-        dotsContainer.style.textAlign = 'center';
-        dotsContainer.style.marginTop = '8px';
+        dotsContainer.style.cssText = 'text-align: center; margin-top: 8px; padding: 4px;';
         
         todaysEvents.forEach(event => {
+            const eventItem = document.createElement('div');
+            eventItem.style.cssText = 'display: flex; align-items: center; justify-content: center; margin: 4px 0;';
+            
             const dot = document.createElement('span');
-            dot.className = `event-dot ${event.type}`;
-            dot.title = event.title; // Shows event title on hover
-            dotsContainer.appendChild(dot);
+            dot.style.cssText = 'display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background-color: #a855f7; flex-shrink: 0;';
+            
+            const title = document.createElement('span');
+            title.textContent = event.title;
+            title.style.cssText = 'color: #ffffff; font-size: 0.75rem; text-align: left;';
+            
+            eventItem.appendChild(dot);
+            eventItem.appendChild(title);
+            dotsContainer.appendChild(eventItem);
         });
         dayCell.appendChild(dotsContainer);
      }
@@ -298,7 +292,6 @@ function generateCalendar() {
      grid.appendChild(dayCell);
    }
 }
-
 </script>
 
 {% endblock %}

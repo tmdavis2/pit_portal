@@ -205,10 +205,20 @@ def esports_schedule_view(request):
     """Display calendar view of all upcoming events"""
     events = Event.objects.filter(
         status='approved',
-        event_type__in=['practice', 'match']
+        event_type__in=['match', 'practice']
     ).order_by('date', 'time')
-
-    return render(request, 'events/esports_schedule.html', {'events': events})
+    
+    events_json = [
+        {
+            "date": event.date.day,
+            "title": event.title,
+            "type": event.event_type,
+            "game": event.game,
+        }
+        for event in events
+    ]
+    
+    return render(request, 'events/esports_schedule.html', {'events': events, "events_json": events_json})
 
 # Create event view
 def create_event_view(request):
