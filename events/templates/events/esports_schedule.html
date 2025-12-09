@@ -1,0 +1,253 @@
+{% extends "pages/home.html" %}
+{% block content %}
+
+<style>
+.schedule-page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 40px 20px;
+}
+
+.schedule-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.schedule-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.create-event-btn {
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.create-event-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+.calendar-grid-events {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 28px;
+}
+
+.event-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+.event-card:hover { transform: translateY(-6px); }
+
+
+.card {
+   background: rgba(26, 26, 26, 0.8);
+   border: 1px solid rgba(168, 85, 247, 0.3);
+   border-radius: 20px;
+   padding: 40px;
+}
+
+.hero-card { max-width: 1000px; margin: 0 auto 40px; text-align: center; }
+
+.hero-card h1 {
+   font-size: 3rem;
+   background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+}
+
+.calendar-controls {
+   max-width: 1200px;
+   margin: 40px auto;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   flex-wrap: wrap;
+}
+
+.calendar-grid {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+}
+
+.day-header {
+   text-align: center;
+   padding: 15px;
+   font-weight: 700;
+   color: #a855f7;
+}
+
+.day-cell {
+   background: #1a1a1a;
+   border: 1px solid rgba(168, 85, 247, 0.2);
+   border-radius: 12px;
+   min-height: 120px;
+}
+
+.day-cell {
+    aspect-ratio: 1;
+}
+
+.current-month {
+    display: block;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+}
+
+</style>
+
+
+<div class="schedule-page">
+    <div class="schedule-header">
+        <h1 class="schedule-title">📅 Esport Team Schedule</h1>
+        <p style="color: #b0b0b0; font-size: 1.1rem;">Upcoming tournaments and gaming events</p>
+        <a href="{% url 'events:create_event' %}" class="create-event-btn">+ Create Event</a>
+    </div>
+
+    <!-- Event Cards -->
+    <div class="calendar-grid-events">
+        {% for event in events %}
+        <div class="event-card">
+            <div class="event-content">
+                <div class="event-date">📆 {{event.date}} at {{event.time}}</div>
+                <h3 class="event-title">{{event.title}}</h3>
+                <div class="event-details">
+                    <div class="detail-item">🎮 {{event.game}}</div>
+                    {% if event.location %}
+                    <div class="detail-item">📍 {{event.location}}</div>
+                    {% endif %}
+                </div>
+                <span class="status-badge {{event.status}}">{{event.status}}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p>No events scheduled yet!</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+<div class="schedule-page">
+    <div class="card hero-card">
+        <h1><i class="fa-solid fa-calendar"></i> Calendar View</h1>
+        <p class="hero-subtitle">View upcoming events by month</p>
+    </div>
+
+    <div class="calendar-controls">
+        <span class="current-month" id="currentMonth">December 2025</span>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div id="esportsCalendar" class="calendar-grid">
+        <div class="day-header">SUN</div>
+        <div class="day-header">MON</div>
+        <div class="day-header">TUE</div>
+        <div class="day-header">WED</div>
+        <div class="day-header">THU</div>
+        <div class="day-header">FRI</div>
+        <div class="day-header">SAT</div>
+    </div>
+</div>
+
+<script id="esports-events-data" type="application/json">
+[
+  { "date": 3, "type": "practice" },
+  { "date": 7, "type": "tournament" },
+  { "date": 12, "type": "practice" },
+  { "date": 18, "type": "tournament" }
+]
+</script>
+
+
+{{ events_json|json_script:"events-data" }}
+
+<script>
+const esportsEvents = JSON.parse(
+    document.getElementById("esports-events-data").textContent
+);
+
+document.addEventListener('DOMContentLoaded', function() {
+    generateCalendar('esportsCalendar', esportsEvents);
+});
+
+
+function generateCalendar(calendarId, events) {
+    const grid = document.getElementById(calendarId);
+    const today = new Date();
+    
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 0 = January, 11 = December
+    const daysInMonth = new Date(year, month + 1, 0).getDate(); // last day of month
+    const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 = Sunday, 1 = Monday, etc.
+    
+    // Clear the calendar first
+    grid.innerHTML = `
+        <div class="day-header">SUN</div>
+        <div class="day-header">MON</div>
+        <div class="day-header">TUE</div>
+        <div class="day-header">WED</div>
+        <div class="day-header">THU</div>
+        <div class="day-header">FRI</div>
+        <div class="day-header">SAT</div>
+    `;
+
+    // Add empty cells for days before the first
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'day-cell other-month';
+        grid.appendChild(emptyCell);
+    }
+
+    // Add days of the month
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'day-cell';
+
+        const number = document.createElement('div');
+        number.className = 'day-number';
+        number.textContent = i;
+        dayCell.appendChild(number);
+
+        // Add event dots
+        const todaysEvents = events.filter(e => e.date === i);
+        if (todaysEvents.length) {
+            const dots = document.createElement('div');
+            todaysEvents.forEach(event => {
+                const dot = document.createElement('span');
+                dot.className = `event-dot ${event.type}`;
+                dots.appendChild(dot);
+            });
+            dayCell.appendChild(dots);
+        }
+
+        grid.appendChild(dayCell);
+    }
+}
+
+</script>
+
+{% endblock %}

@@ -5,6 +5,8 @@ from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.db.models import Q
 from .models import Event, EventRegistration
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 def index(request):
     """landing page for events"""
@@ -174,12 +176,28 @@ def dashboard(request):
         'events': events,
     }
     return render(request, 'events/dashboard.html', context)
-# Schedule page view
+# Events schedule page view
 def schedule_view(request):
     """Display calendar view of all upcoming events"""
     events = Event.objects.filter(status='upcoming').order_by('date', 'time')
-    return render(request, 'events/schedule.html', {'events': events})
 
+    events_json = [
+        {
+            "date": event.date.day,
+            "title": event.title,
+            "type": event.event_type,
+            "game": event.game,
+        }
+        for event in events
+    ]
+
+    return render(request, 'events/events_schedule.html', {'events': events, "events_json": events_json})
+
+# Esports Team schedule page view
+def esports_schedule_view(request):
+    """Display calendar view of all upcoming events"""
+    events = Event.objects.filter(status='upcoming').order_by('date', 'time')
+    return render(request, 'events/esports_schedule.html', {'events': events})
 
 # Create event view
 def create_event_view(request):
