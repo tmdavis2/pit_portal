@@ -17,7 +17,7 @@ import json
 def stats_view(request):
 
     #  INPUT:
-    #  - Accepts 'game' slected from the form or query requests
+    #  - Accepting the game from form, etc.
     selected_game = request.POST.get("game") or request.GET.get("game") or None
 
     #  STATE:
