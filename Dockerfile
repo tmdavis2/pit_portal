@@ -19,4 +19,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Start with Daphne for ASGI (if using channels) or Gunicorn for WSGI
-CMD daphne -b 0.0.0.0 -p $PORT pit_portal.asgi:application
+CMD daphne -b 0.0.0.0 -p 3000 pit_portal.asgi:application
