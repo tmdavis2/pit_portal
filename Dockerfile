@@ -12,12 +12,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy code
 COPY . .
 
-# Run migrations and collect static
-RUN python manage.py migrate
+# Collect static files (but don't run migrations here)
 RUN python manage.py collectstatic --noinput
 
 # Expose port
-EXPOSE $PORT
+EXPOSE 8000
 
-# Start with Gunicorn
-CMD daphne pit_portal.wsgi:application --bind 0.0.0.0:$PORT
+# Start with Daphne for ASGI (if using channels) or Gunicorn for WSGI
+CMD daphne -b 0.0.0.0 -p $PORT pit_portal.asgi:application
