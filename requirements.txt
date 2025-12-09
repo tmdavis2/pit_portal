@@ -6,3 +6,5 @@ daphne
 whitenoise  
 Pillow
 dj-database-url
+psycopg>=3.1,<4
+
