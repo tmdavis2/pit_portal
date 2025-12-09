@@ -51,22 +51,17 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
    pip install django django-tailwind daphne channels channels-redis Pillow whitenoise
    ```
 
-3. **Install additional dependencies** (if needed):
-   ```bash
-   pip install channels-redis
-   ```
-
-4. **Navigate to the Django project**:
+3. **Navigate to the Django project**:
    ```bash
    cd pit_portal
    ```
 
-5. **Run migrations**:
+4. **Run migrations**:
    ```bash
    python manage.py migrate
    ```
 
-6. **Create a superuser** (optional):
+5. **Create a superuser** (optional):
    ```bash
    python manage.py createsuperuser
    ```
