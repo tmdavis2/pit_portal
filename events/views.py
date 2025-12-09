@@ -196,7 +196,7 @@ def schedule_view(request):
 # Esports Team schedule page view
 def esports_schedule_view(request):
     """Display calendar view of all upcoming events"""
-    events = Event.objects.filter(status='upcoming').order_by('date', 'time')
+    events = Event.objects.filter(status='approved').order_by('date', 'time')
     return render(request, 'events/esports_schedule.html', {'events': events})
 
 # Create event view

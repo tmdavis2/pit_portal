@@ -10,7 +10,7 @@ class EventAdmin(admin.ModelAdmin):
     
     def approve_events(self, request, queryset):
         """Approve selected events"""
-        updated = queryset.update(status='upcoming')
+        updated = queryset.update(status='approved')
         self.message_user(request, f'{updated} event(s) approved!')
     approve_events.short_description = "✅ Approve selected events"
     

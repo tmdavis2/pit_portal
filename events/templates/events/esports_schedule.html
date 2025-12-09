@@ -21,6 +21,30 @@
     margin-bottom: 20px;
 }
 
+.alert {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px 30px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    color: #c084fc;
+}
+
+.no-events-message {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 1.2rem;
+    padding: 40px;
+    margin: 40px auto;
+}
+
 .create-event-btn {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     color: #ffffff;
@@ -144,7 +168,7 @@
             </div>
         </div>
         {% empty %}
-        <p>No events scheduled yet!</p>
+        <p class="no-events-message">No events scheduled yet!</p>
         {% endfor %}
     </div>
 </div>
