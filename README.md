@@ -39,33 +39,67 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 
 ## Installation
 
+### Option 1: With Docker and Redis (Recommended for Full Features)
+
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
-   cd pit_portal2
+   cd pit_portal
    ```
 
-2. **Set up the environment**:
-   Create a virtual environment and activate it (commands vary by platform):
+2. **Set up Docker and Redis**:
+   - Install Docker Desktop.
+   - Run Redis in Docker: `docker run -d -p 6379:6379 redis:alpine`
+   - Set environment variable: `REDIS_URL=redis://localhost:6379`
+
+3. **Set up the environment**:
+   Create a virtual environment and activate it:
    - **Windows**:
      ```bash
      python -m venv .venv
-     source .venv/Scripts/activate
+     .venv\Scripts\activate
      ```
    - **macOS/Linux**:
      ```bash
      python -m venv .venv
      source .venv/bin/activate
      ```
-   Install Python dependencies:
+   - Install Python dependencies: `pip install -r requirements.txt`
+
+4. **Run migrations**:
    ```bash
-   pip install django django-tailwind daphne channels channels-redis Pillow whitenoise
+   python manage.py migrate
    ```
 
-3. **Navigate to the Django project**:
+5. **Create a superuser** (optional):
    ```bash
+   python manage.py createsuperuser
+   ```
+
+### Option 2: Simple Local Setup with In-Memory Channel Layers
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
    cd pit_portal
    ```
+
+2. **Set up the environment**:
+   Create a virtual environment and activate it:
+   - **Windows**:
+     ```bash
+     python -m venv .venv
+     .venv\Scripts\activate
+     ```
+   - **macOS/Linux**:
+     ```bash
+     python -m venv .venv
+     source .venv/bin/activate
+     ```
+   - Install Python dependencies: `pip install -r requirements.txt`
+
+3. **Modify settings for in-memory channels**:
+   In `pit_portal/settings.py`, comment out the Redis CHANNEL_LAYERS and uncomment the InMemory one.
 
 4. **Run migrations**:
    ```bash
@@ -81,11 +115,11 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 
 1. **Start the development server**:
    ```bash
-   daphne pit_portal.asgi:application -p 8001
+   daphne pit_portal.asgi:application 
    ```
 
 2. **Access the application**:
-   Open your browser and go to `http://127.0.0.1:8001`
+   Open your browser and go to `http://127.0.0.1:8000`
 
 ## Development
 

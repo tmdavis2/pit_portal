@@ -6,7 +6,6 @@ daphne
 whitenoise  
 Pillow
 dj-database-url
-psycopg2-binary==2.9.9
 channels-redis
 
 

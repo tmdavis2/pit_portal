@@ -46,9 +46,9 @@
     
     // Get room name from Django template variable
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
-    
-    const chatSocket = new WebSocket("wss
-    ://" + window.location.host + "/ws/chat/" + roomName + "/");
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const chatSocket = new WebSocket(protocol + "//" + window.location.host + "/ws/chat/" + roomName + "/");
+
     
     /*
         WEBSOCKET MESSAGE HANDLER
