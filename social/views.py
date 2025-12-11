@@ -19,7 +19,7 @@ def socialPage(request, *args, **kwargs):
     context = {'previous_rooms': previous_rooms}
     return render(request, "social/socialPage.html", context)
     
-
+    
 def room(request, room_name):
     original_room_name = room_name
     room_name = room_name.replace(' ', '_')
@@ -31,6 +31,7 @@ def room(request, room_name):
     else:
         room_display_name = original_room_name
     return render(request, "social/room.html", {"room_name": room_name, "messages": messages, "room_display_name": room_display_name})
+
 
 def search_users(request):
     if not request.user.is_authenticated:
