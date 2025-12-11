@@ -21,15 +21,16 @@ def socialPage(request, *args, **kwargs):
     
 
 def room(request, room_name):
+    original_room_name = room_name
+    room_name = room_name.replace(' ', '_')
     messages = Message.objects.filter(room_name=room_name).order_by('timestamp')[:50]
     if room_name.startswith('dm_'):
         parts = room_name[3:].split('_')
         other_user = next((p for p in parts if p != request.user.username), None)
         room_display_name = other_user if other_user else room_name
     else:
-        room_display_name = room_name
-    return render(request, "social/room.html", {"room_name": room_name, "messages": messages, "room_display_name": room_display_name})
-
+        room_display_name = original_room_name
+    return render(request, "social/room.html", {"room_name": room_name, "messages": messages, "room_display_name": room_display_na
 
 def search_users(request):
     if not request.user.is_authenticated:
