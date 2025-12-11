@@ -30,7 +30,7 @@ def room(request, room_name):
         room_display_name = other_user if other_user else room_name
     else:
         room_display_name = original_room_name
-    return render(request, "social/room.html", {"room_name": room_name, "messages": messages, "room_display_name": room_display_na
+    return render(request, "social/room.html", {"room_name": room_name, "messages": messages, "room_display_name": room_display_name})
 
 def search_users(request):
     if not request.user.is_authenticated:
