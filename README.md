@@ -22,10 +22,19 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 - **Pit Portal Events Page**
 ![Screenshot of the Pit Portal events page](pages/static/pages/images/events_page.png)
 
+## Branches
+
+This repository has multiple branches for different deployment scenarios:
+
+- **main-local (local development)**: Optimized for local installation and running with SQLite database and in-memory channel layers for WebSockets.
+- **main**: Configured for deployment on Fly.io with PostgreSQL database and Redis for channel layers.
+
+For local development, stay on this branch. For production deployment, switch to the Fly.io branch.
+
 ## Tech Stack
 
 - **Backend**: Django 5.2.5, Django Channels, Daphne (ASGI server)
-- **Database**: SQLite (development), Redis (for channel layers)
+- **Database**: SQLite (development), PostgreSQL (production), Redis (for channel layers)
 - **Frontend**: HTML, Custom CSS (Tailwind CSS configured but not actively used for styling)
 - **Real-Time**: WebSockets via Django Channels
 - **Deployment**: Docker, Fly.io
@@ -33,7 +42,6 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 ## Prerequisites
 
 - Python 3.8+
-- Node.js (for Tailwind CSS compilation)
 - Docker (for Redis)
 - Git
 
