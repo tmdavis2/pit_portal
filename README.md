@@ -11,6 +11,9 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 - **Responsive Design**: Modern UI built with Tailwind CSS
 - **Real-Time Communication**: Powered by Django Channels and Redis
 
+## Screenshots
+![Screenshot of the Pit Portal home page](pages/static/pages/images/home_page.png)
+
 ## Tech Stack
 
 - **Backend**: Django 5.2.5, Django Channels, Daphne (ASGI server)
