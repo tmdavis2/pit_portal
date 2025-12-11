@@ -170,16 +170,23 @@ def event_results(request, pk):
 
 def dashboard(request):
     """Display events dashboard"""
-    events = Event.objects.all().order_by('date', 'time')
+    events = Event.objects.filter(
+        status='approved',
+        event_type__in=['tournament', 'schedule']
+    ).order_by('date', 'time')
     
     context = {
         'events': events,
     }
     return render(request, 'events/dashboard.html', context)
+
 # Events schedule page view
 def schedule_view(request):
-    """Display calendar view of all upcoming events"""
-    events = Event.objects.filter(status='upcoming').order_by('date', 'time')
+    """Display calendar view of all approved events"""
+    events = Event.objects.filter(
+        status='approved',
+        event_type__in=['tournament', 'schedule']
+    ).order_by('date', 'time')
 
     events_json = [
         {
@@ -196,8 +203,22 @@ def schedule_view(request):
 # Esports Team schedule page view
 def esports_schedule_view(request):
     """Display calendar view of all upcoming events"""
-    events = Event.objects.filter(status='upcoming').order_by('date', 'time')
-    return render(request, 'events/esports_schedule.html', {'events': events})
+    events = Event.objects.filter(
+        status='approved',
+        event_type__in=['match', 'practice']
+    ).order_by('date', 'time')
+    
+    events_json = [
+        {
+            "date": event.date.day,
+            "title": event.title,
+            "type": event.event_type,
+            "game": event.game,
+        }
+        for event in events
+    ]
+    
+    return render(request, 'events/esports_schedule.html', {'events': events, "events_json": events_json})
 
 # Create event view
 def create_event_view(request):
@@ -217,8 +238,7 @@ def create_event_view(request):
             created_by=request.user if request.user.is_authenticated else None
         )
         
-        from django.contrib import messages
-        messages.success(request, f'Event "{event.title}" submitted! Awaiting admin approval.')
-        return redirect('events:schedule')
+        messages.success(request, 'Event submitted! Awaiting administration approval.')
+        return redirect('events:events_schedule')
     
     return render(request, 'events/create_event.html')

@@ -2,10 +2,12 @@
 {% block content %}
 <main>
     <div class="social-page-container">
+        <!-- Sidebar: displays list of previous chat rooms -->
         <aside class="social-sidebar">
             <h3>Previous Chats</h3>
             <div class="previous-chats-container">
                 <ul>
+                    <!-- Loop through all previous rooms and create clickable links -->
                     {% for room in previous_rooms %}
                         <li>
                             <a href="{% url 'room' room.room_name %}">
@@ -16,13 +18,15 @@
                 </ul>
             </div>
         </aside>
-
+        
+        <!-- Main content area: chat room and direct message functionality -->
         <div class="social-main-content">
             <div class="card">
                 <h1><i class="fa-solid fa-comment"></i> Social Hub</h1>
                 <p class="hero-subtitle">Connect with fellow gamers</p>
                 
                 <div class="social-content">
+                    <!-- Section 1: Join or create a chat room -->
                     <div class="social-section">
                         <h2>Join a Chat Room</h2>
                         <p>Enter a room name to join an existing chat or create a new one.</p>
@@ -30,10 +34,12 @@
                         <button id="room-name-submit" class="card-link">Enter Room</button>
                     </div>
                     
+                    <!-- Section 2: Search for users to start direct messages -->
                     <div class="social-section">
                         <h2>Start a Direct Chat</h2>
                         <p>Search for a user to start a private conversation.</p>
                         <input id="user-search-input" type="text" placeholder="Search for a user..." class="form-input">
+                        <!-- Results list populated dynamically via JavaScript -->
                         <ul id="user-results"></ul>
                     </div>
                 </div> 
@@ -43,42 +49,62 @@
 </main>
 
 <script>
+    // Auto-focus the room name input when page loads
     document.querySelector('#room-name-input').focus();
+    
+    // Allow Enter key to submit room name
     document.querySelector('#room-name-input').onkeyup = function(e) {
         if (e.key === 'Enter') document.querySelector('#room-name-submit').click();
     };
-
+    
+    // Navigate to chat room when button is clicked
     document.querySelector('#room-name-submit').onclick = function() {
         var roomName = document.querySelector('#room-name-input').value;
+        // Only navigate if room name is not empty
         if (roomName.trim()) {
             window.location.pathname = '/social/' + roomName + '/';
         }
     };
-
+    
+    // User search functionality with debouncing
     const userSearchInput = document.querySelector('#user-search-input');
     const userResults = document.querySelector('#user-results');
     let debounceTimer;
-
+    
+    // Listen for input changes in search field
     userSearchInput.addEventListener('input', function() {
+        // Clear previous timer to avoid excessive API calls
         clearTimeout(debounceTimer);
         const query = this.value.trim();
+        
+        // Only search if query is at least 2 characters
         if (query.length < 2) {
             userResults.innerHTML = '';
             return;
         }
+        
+        // Wait 300ms after user stops typing before searching
         debounceTimer = setTimeout(() => {
+            // Fetch matching users from server
             fetch(`/social/search-users/?q=${encodeURIComponent(query)}`, {credentials: 'same-origin'})
                 .then(response => response.json())
                 .then(data => {
+                    // Clear previous results
                     userResults.innerHTML = '';
+                    
+                    // Create list item for each matching user
                     data.users.forEach(user => {
                         const li = document.createElement('li');
                         li.textContent = user.username;
+                        
+                        // When user clicks on a result, create DM room
                         li.addEventListener('click', () => {
                             const currentUser = '{{ request.user.username }}';
+                            // Create consistent room name by sorting usernames alphabetically
                             const roomName = `dm_${[currentUser, user.username].sort().join('_')}`;
                             window.location.pathname = `/social/${roomName}/`;
                         });
+                        
                         userResults.appendChild(li);
                     });
                 })
@@ -88,7 +114,11 @@
 </script>
 
 <style>
-    /* Container Grid Layout */
+    /*
+        MAIN CONTAINER STYLES
+    */
+    
+    /* Grid layout container - sidebar on left, main content on right */
     .social-page-container {
         display: grid;
         grid-template-columns: 1fr 2fr; /* sidebar 1 / main 2 */
@@ -98,7 +128,12 @@
         margin: 0 auto;
         padding: 16px;
     }
-
+    
+    /*
+        SIDEBAR SECTION
+    */
+    
+    /* Sidebar container with glassmorphism effect */
     .social-sidebar {
         background: rgba(20, 20, 20, 0.8);
         backdrop-filter: blur(10px);
@@ -108,23 +143,27 @@
         border: 1px solid rgba(48,4,153,0.4);
         height: fit-content;
     }
-
+    
+    /* Sidebar title styling */
     .social-sidebar h3 {
         color: #a855f7;
         margin-bottom: 16px;
         font-size: 1.2rem;
     }
-
+    
+    /* Remove default list styling */
     .social-sidebar ul {
         list-style: none;
         padding: 0;
         margin: 0;
     }
-
+    
+    /* Spacing between list items */
     .social-sidebar li {
         margin-bottom: 8px;
     }
-
+    
+    /* Chat room link styling */
     .social-sidebar a {
         color: #e0e0e0;
         text-decoration: none;
@@ -135,12 +174,18 @@
         border-radius: 8px;
         transition: all 0.3s ease;
     }
-
+    
+    /* Hover effect for chat room links */
     .social-sidebar a:hover {
         background: rgba(48, 4, 153, 0.2);
         color: #fff;
     }
-
+    
+    /*
+        MAIN CONTENT CARD
+    */
+    
+    /* Main content card with dark theme styling */
     .social-main-content .card {
         background: rgba(20,20,20,0.8);
         border-radius: 20px;
@@ -149,27 +194,40 @@
         border: 1px solid rgba(48,4,153,0.4);
         color: #e0e0e0;
     }
-
+    
+    /* Center and constrain social content width */
     .social-content {
         text-align: left;
         max-width: 600px;
         margin: 0 auto;
     }
-
+    
+    /*
+        SOCIAL SECTIONS (Join Room & Direct Chat)
+    */
+    
+    /* Individual section container with bottom spacing */
     .social-section {
         margin-bottom: 40px;
     }
-
+    
+    /* Section heading styling */
     .social-section h2 {
         color: #a855f7;
         margin-bottom: 10px;
     }
-
+    
+    /* Section description text */
     .social-section p {
         color: #b0b0b0;
         margin-bottom: 20px;
     }
-
+    
+    /*
+        FORM INPUT STYLING
+    */
+    
+    /* Text input fields with dark theme */
     .form-input {
         width: 100%;
         padding: 10px;
@@ -179,7 +237,8 @@
         background: rgba(30,30,30,0.8);
         color: #fff;
     }
-
+    
+    /* Enter room button with gradient background */
     #room-name-submit {
         display: inline-block;
         padding: 10px 20px;
@@ -189,11 +248,17 @@
         border-radius: 8px;
         cursor: pointer;
     }
-
+    
+    /* Hover effect for enter room button */
     #room-name-submit:hover {
         background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
     }
-
+    
+    /*
+        USER SEARCH RESULTS
+    */
+    
+    /* Container for user search results dropdown */
     #user-results {
         list-style: none;
         padding: 0;
@@ -203,41 +268,50 @@
         border-radius: 8px;
         background: rgba(30,30,30,0.8);
     }
-
+    
+    /* Individual user result item */
     #user-results li {
         cursor: pointer;
         padding: 10px;
         border-bottom: 1px solid rgba(48, 4, 153, 0.2);
         transition: background 0.3s ease;
     }
-
+    
+    /* Hover effect for user results */
     #user-results li:hover {
         background: rgba(48, 4, 153, 0.1);
     }
-
-    /* Responsive: stack cards on smaller screens */
+    
+    /*
+        RESPONSIVE DESIGN
+    */
+    
+    /* Tablet and smaller: stack sidebar and main content vertically */
     @media (max-width: 1024px) {
         .social-page-container {
             grid-template-columns: 1fr;
             gap: 24px;
         }
-
+        
+        /* Center and constrain width of stacked sections */
         .social-sidebar, .social-main-content .card {
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
         }
     }
-
+    
+    /* Mobile: reduce text sizes and padding */
     @media (max-width: 600px) {
         .social-section h2 {
             font-size: 1.2rem;
         }
-
+        
         .social-main-content .card {
             padding: 16px;
         }
-
+        
+        /* Make enter room button full width on mobile */
         #room-name-submit {
             width: 100%;
         }

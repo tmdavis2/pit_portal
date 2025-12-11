@@ -2,22 +2,23 @@
 {% load tz %}
 {% block content %}
 <main>
-    
-    <!--This is the main box you see on the middle of the screen-->
+    <!-- Main chat room container card -->
     <div class="card">
         <h1>
             <i class="fa-solid fa-comments"></i>
             Chat Room: {{room_display_name}}
-
         </h1>
         <p class="hero-subtitle">Real-time conversation</p>
         
-        <!--This is the box within the main box that displays all of the previous messages-->
+        <!-- Chat interface container -->
         <div class="chat-container">
+            <!-- Message display area -->
             <div class="chat-messages">
-                <div id="chat-log" style ="width: 100%; height: 400px; padding: 16px; border-radius: 10px; border: 1px solid rgba(48, 4, 153, 1); background-color: rgba(30, 30, 30, 01); font-family: 'Source Sans 3', sans-serif; font-size: 14px; line-height: 1.5; overflow-y: auto; white-space: pre-wrap;"></div>
+                <!-- Scrollable chat log displaying all messages -->
+                <div id="chat-log" style="width: 100%; height: 400px; padding: 16px; border-radius: 10px; border: 1px solid rgba(48, 4, 153, 1); background-color: rgba(30, 30, 30, 01); font-family: 'Source Sans 3', sans-serif; font-size: 14px; line-height: 1.5; overflow-y: auto; white-space: pre-wrap;"></div>
             </div>
             
+            <!-- Message input area -->
             <div class="chat-input-section">
                 <input id="chat-message-input" type="text" placeholder="Type your message..." class="form-input">
                 <button id="chat-message-submit" class="card-link" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #300499 0%, #6b21a8 100%); color: white; border: none; border-radius: 8px; cursor: pointer; margin-left: 10px;">Send Message</button>
@@ -26,63 +27,109 @@
     </div>
 </main>
 
+<!-- Safely pass room name from Django to JavaScript -->
 {{ room_name|json_script:"room-name" }}
 
 <script>
-    // Load existing messages
+    /*
+        LOAD EXISTING MESSAGES
+    */
+    
+    // Loop through all previous messages from Django context and display them
     {% for msg in messages %}
-        document.querySelector('#chat-log').innerHTML += `<div><strong>{{ msg.username }}</strong>: {{ msg.content }} <span style ="color: #333333; font-size: 10px;">{{msg.timestamp|localtime|date:"M j, Y g: i A"}}</span></div>\n`;
+        document.querySelector('#chat-log').innerHTML += `<div><strong>{{ msg.username }}</strong>: {{ msg.content }} <span style="color: #333333; font-size: 10px;">{{msg.timestamp|localtime|date:"M j, Y g:i A"}}</span></div>\n`;
     {% endfor %}
     
+    /*
+        WEBSOCKET CONNECTION SETUP
+    */
+    
+    // Get room name from Django template variable
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
     
     const chatSocket = new WebSocket("wss
     ://" + window.location.host + "/ws/chat/" + roomName + "/");
     
+    /*
+        WEBSOCKET MESSAGE HANDLER
+    */
+    
+    // Handle incoming messages from WebSocket
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
+        // Format timestamp for display
         const timestamp = new Date().toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'})
-        document.querySelector('#chat-log').innerHTML += `<div><strong>${data.username}</strong>: ${data.message} <span style = "color: #333333; font-size: 10px;">${timestamp}</span></div>`;
-        // Auto-scroll to bottom
+        // Append new message to chat log
+        document.querySelector('#chat-log').innerHTML += `<div><strong>${data.username}</strong>: ${data.message} <span style="color: #333333; font-size: 10px;">${timestamp}</span></div>`;
+        
+        // Auto-scroll to bottom to show newest message
         const chatLog = document.querySelector('#chat-log');
         chatLog.scrollTop = chatLog.scrollHeight;
     };
-
+    
+    /*
+        WEBSOCKET ERROR HANDLER
+    */
+    
+    // Handle WebSocket connection closure
     chatSocket.onclose = function(e) {
         console.error('Chat socket closed unexpectedly');
         document.querySelector('#chat-log').value += 'Connection lost. Please refresh the page.\n';
     };
-
+    
+    /*
+        MESSAGE INPUT HANDLERS
+    */
+    
+    // Auto-focus message input when page loads
     document.querySelector('#chat-message-input').focus();
+    
+    // Allow Enter key to send message
     document.querySelector('#chat-message-input').onkeyup = function(e) {
         if (e.key === 'Enter') {
             document.querySelector('#chat-message-submit').click();
         }
     };
-
+    
+    // Send message when button is clicked
     document.querySelector('#chat-message-submit').onclick = function(e) {
         const messageInputDom = document.querySelector('#chat-message-input');
         const message = messageInputDom.value.trim();
+        
+        // Only send if message is not empty
         if (message) {
+            // Send message through WebSocket as JSON
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'username': '{{ request.user.username }}'
             }));
+            // Clear input field after sending
             messageInputDom.value = '';
         }
     };
 </script>
 
 <style>
+    /*
+        MAIN CONTAINER STYLES
+    */
+    
+    /* Centers and constrains chat interface width */
     .chat-container {
         max-width: 800px;
         margin: 0 auto;
     }
     
+    /*
+        MESSAGE DISPLAY AREA
+    */
+    
+    /* Spacing below message display area */
     .chat-messages {
         margin-bottom: 20px;
     }
     
+    /* Scrollable chat log container with dark theme */
     #chat-log {
         width: 100%;
         height: 400px;
@@ -93,44 +140,59 @@
         color: #e0e0e0;
         font-family: "Source Sans 3", sans-serif;
         font-size: 14px;
-        resize: vertical;
+        resize: vertical; /* Allows user to resize height */
         line-height: 1.5;
         text-align: left;
     }
     
+    /* Focus state for chat log (if user clicks into it) */
     #chat-log:focus {
         outline: none;
         border-color: #a855f7;
         box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
     }
     
+    /*
+        MESSAGE INPUT SECTION
+    */
+    
+    /* Flexbox layout for input and send button */
     .chat-input-section {
         display: flex;
         align-items: center;
         gap: 10px;
     }
     
+    /* Input field takes up remaining space */
     .chat-input-section .form-input {
         flex: 1;
         margin-bottom: 0;
     }
     
+    /* Prevent button text from wrapping */
     .chat-input-section .card-link {
         white-space: nowrap;
         transition: all 0.3s ease;
     }
     
+    /* Hover effect for send button - lifts and adds glow */
     .chat-input-section .card-link:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
     }
     
+    /*
+        RESPONSIVE DESIGN
+    */
+    
+    /* Mobile: stack input and button vertically */
     @media (max-width: 768px) {
         .chat-input-section {
             flex-direction: column;
             align-items: stretch;
         }
         
+        /* Full width button on mobile with top spacing */
         .chat-input-section .card-link {
             margin-left: 0;
             margin-top: 10px;

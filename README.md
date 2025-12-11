@@ -6,10 +6,21 @@ A comprehensive web portal for the Florida Southern Pit Portal, built with Djang
 
 - **User Management**: Custom user authentication and account handling
 - **Real-Time Social Chat**: WebSocket-based chat rooms for community interaction
-- **Sports Statistics**: Detailed player and team statistics with leaderboards
+- **Game Statistics**: Detailed player and game statistics with leaderboards
 - **Event Management**: Tools for organizing and tracking athletic events
 - **Responsive Design**: Modern UI built with Tailwind CSS
 - **Real-Time Communication**: Powered by Django Channels and Redis
+
+## Screenshots
+
+- **Pit Portal Home Page**
+![Screenshot of the Pit Portal home page](pages/static/pages/images/home_page.png)
+- **Pit Portal Stats Page**
+![Screenshot of the Pit Portal stats page](pages/static/pages/images/stats_page.png)
+- **Pit Portal Social Page**
+![Screenshot of the Pit Portal social page](pages/static/pages/images/social_page.png)
+- **Pit Portal Events Page**
+![Screenshot of the Pit Portal events page](pages/static/pages/images/events_page.png)
 
 ## Tech Stack
 
