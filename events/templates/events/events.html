@@ -349,11 +349,8 @@
             <div class="event-actions">
               ${event.status === 'upcoming' ? 
                 `<form method="POST" action="/events/${event.id}/register/" style="margin: 0; flex: 1;"><input type="hidden" name="csrfmiddlewaretoken" value="${window.CSRF_TOKEN}"><button type="submit" class="event-btn primary" style="width: 100%;">Register Now</button></form>` :
-                event.status === 'live' ? 
-                  `<button class="event-btn primary" onclick="location.href='/events/${event.id}/live'">Watch Live</button>` :
-                  `<button class="event-btn primary" onclick="location.href='/events/${event.id}/results'">View Results</button>`
+                ''
               }
-              <button class="event-btn secondary" onclick="location.href='/events/${event.id}'">More Info</button>
             </div>
           </div>
         </div>
