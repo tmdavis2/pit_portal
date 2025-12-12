@@ -29,7 +29,7 @@ This repository has multiple branches for different deployment scenarios:
 - **main-local (local development)**: Optimized for local installation and running with SQLite database and in-memory channel layers for WebSockets.
 - **main**: Configured for deployment on Fly.io with PostgreSQL database and Redis for channel layers.
 
-For local development, stay on this branch. For production deployment, switch to the Fly.io branch.
+For local development, stay on the main-local. For production deployment, switch to the main branch.
 
 ## Tech Stack
 
