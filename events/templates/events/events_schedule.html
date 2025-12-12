@@ -21,6 +21,30 @@
     margin-bottom: 20px;
 }
 
+.alert {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px 30px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    color: #c084fc;
+}
+
+.no-events-message {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 1.2rem;
+    padding: 40px;
+    margin: 40px auto;
+}
+
 .create-event-btn {
     background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
     color: #ffffff;
@@ -117,6 +141,49 @@
     margin-bottom: 20px;
 }
 
+.day-number {
+    padding: 8px;
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+.event-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 2px;
+}
+
+.event-dot.Tournament {
+    background-color: #a855f7;
+}
+
+.event-dot.Schedule {
+    background-color: #3b82f6;
+}
+
+.event-dot.Match {
+    background-color: #10b981;
+}
+
+.event-dot.Practice {
+    background-color: #f59e0b;
+}
+
+.other-month {
+    opacity: 0.3;
+}
+
+.event-dot {
+    display: inline-block;
+    width: 12px;  /* Made bigger */
+    height: 12px;  /* Made bigger */
+    border-radius: 50%;
+    margin: 4px;  /* More spacing */
+}
+
 </style>
 
 
@@ -126,6 +193,14 @@
         <p style="color: #b0b0b0; font-size: 1.1rem;">Upcoming tournaments and gaming events</p>
         <a href="{% url 'events:create_event' %}" class="create-event-btn">+ Create Event</a>
     </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <!-- Event Cards -->
     <div class="calendar-grid-events">
@@ -144,7 +219,7 @@
             </div>
         </div>
         {% empty %}
-        <p>No events scheduled yet!</p>
+        <p class="no-events-message">No events scheduled yet!</p>
         {% endfor %}
     </div>
 </div>
@@ -177,10 +252,8 @@
 {{ events_json|json_script:"events-data" }}
 
 <script>
-const events = JSON.parse(
-    document.getElementById("events-data").textContent
-);
-
+const eventsData = document.getElementById("events-data");
+const events = eventsData ? JSON.parse(eventsData.textContent) : [];
 
 document.addEventListener('DOMContentLoaded', function() {
    generateCalendar();
@@ -188,36 +261,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function generateCalendar() {
    const grid = document.getElementById('calendarView');
-   const today = new Date().getDate();
-  
-   const daysInMonth = 31;
    const firstDayOfMonth = 1;
+   const daysInMonth = 31;
   
+   // Add empty cells before month starts
    for (let i = 0; i < firstDayOfMonth; i++) {
      const emptyCell = document.createElement('div');
      emptyCell.className = 'day-cell other-month';
      grid.appendChild(emptyCell);
    }
 
-   for (let i = 1; i <= daysInMonth; i++) {
+   // Add each day
+   for (let day = 1; day <= daysInMonth; day++) {
      const dayCell = document.createElement('div');
      dayCell.className = 'day-cell';
 
      const number = document.createElement('div');
      number.className = 'day-number';
-     number.textContent = i;
+     number.textContent = day;
      dayCell.appendChild(number);
 
-     // Add event dots
-     const todaysEvents = events.filter(e => e.date === i);
-     if (todaysEvents.length) {
-        const dots = document.createElement('div');
+     // Find events for this day
+     const todaysEvents = events.filter(e => e.date === day);
+     
+     if (todaysEvents.length > 0) {
+        const dotsContainer = document.createElement('div');
+        dotsContainer.style.cssText = 'text-align: center; margin-top: 8px; padding: 4px;';
+        
         todaysEvents.forEach(event => {
+            const eventItem = document.createElement('div');
+            eventItem.style.cssText = 'display: flex; align-items: center; justify-content: center; margin: 4px 0;';
+            
             const dot = document.createElement('span');
-            dot.className = `event-dot ${event.type}`;
-            dots.appendChild(dot);
+            dot.style.cssText = 'display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background-color: #a855f7; flex-shrink: 0;';
+            
+            const title = document.createElement('span');
+            title.textContent = event.title;
+            title.style.cssText = 'color: #ffffff; font-size: 0.75rem; text-align: left;';
+            
+            eventItem.appendChild(dot);
+            eventItem.appendChild(title);
+            dotsContainer.appendChild(eventItem);
         });
-        dayCell.appendChild(dots);
+        dayCell.appendChild(dotsContainer);
      }
 
      grid.appendChild(dayCell);
